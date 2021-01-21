@@ -1,0 +1,12 @@
+enum SpectatorButton
+{
+    Q = Button.Ability1,
+    E = Button.Interact,
+    Shift = Button.SecondaryFire,
+    Ctrl = Button.PrimaryFire,
+    M1 = Button.Ability2,
+    B = Button.Jump,
+    Z = Button.Ultimate
+}
+
+define IsHostSpectator(): !ArrayContains(AllPlayers(), HostPlayer());

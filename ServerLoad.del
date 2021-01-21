@@ -1,0 +1,16 @@
+import "Colors.del";
+import "AltFont.del";
+
+rule: "[ServerLoad.del] Track and show server load"
+{
+    CreateHudText(
+        Header:         AltFont(ServerLoadAverage()),
+        Subheader:      AltFont("Server Load"),
+        Text:           AltFont("Average"),
+        Location:       Location.Right,
+        HeaderColor:    Gradient(ColorValues(0, 230, 151), ColorValues(236, 153, 0), ServerLoadAverage()/255),
+        SortOrder:      -10,
+        Reevaluation:   HudTextRev.VisibleToStringAndColor,
+        Spectators:     Spectators.VisibleAlways
+    );
+}
