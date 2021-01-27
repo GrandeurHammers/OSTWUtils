@@ -1,34 +1,45 @@
-import "Math.del";
+class ComponentColor {
+    public Number Red;
+    public Number Green;
+    public Number Blue;
+    public Number Alpha;
+    public ComponentColor(Number red=255, Number green=255, Number blue=255, Number alpha=255) {
+        this.Red    = red;
+        this.Green  = green;
+        this.Blue   = blue;
+        this.Alpha  = alpha;
+    }
+    public ComponentColor(Color c) {
+        Number cIndex = IndexOfArrayValue(Colors.AllColors, c);
+        this.Red    = Colors.AllColorComponents[cIndex][0];
+        this.Green  = Colors.AllColorComponents[cIndex][1];
+        this.Blue   = Colors.AllColorComponents[cIndex][2];
+        this.Alpha  = Colors.AllColorComponents[cIndex][3];
+    }
+    public Color Out(): CustomColor(Red, Green, Blue, Alpha);
+}
 
-define ColorValues(define Red = 255, define Green = 255, define Blue = 255, define Alpha = 255): [Red, Green, Blue, Alpha];
-define Gradient(define ColorValues1, define ColorValues2, define Fraction):
-    CustomColor(
-        LinearInterpolate(ColorValues1[0], ColorValues2[0], Fraction),
-        LinearInterpolate(ColorValues1[1], ColorValues2[1], Fraction),
-        LinearInterpolate(ColorValues1[2], ColorValues2[2], Fraction),
-        LinearInterpolate(ColorValues1[3], ColorValues2[3], Fraction)
-    );
+class Colors {
+    public static Color Gradient(ComponentColor color1, ComponentColor color2, Number fraction):
+        CustomColor(
+            LinearInterpolate(color1.Red,   color2.Red,   fraction),
+            LinearInterpolate(color1.Green, color2.Green, fraction),
+            LinearInterpolate(color1.Blue,  color2.Blue,  fraction),
+            LinearInterpolate(color1.Alpha, color2.Alpha, fraction)
+        );
 
-define AllColors: [Color.White, Color.Yellow, Color.Green, Color.Purple, Color.Red,
-                   Color.Blue, Color.Aqua, Color.Orange, Color.SkyBlue, Color.Turquoise,
-                   Color.LimeGreen, Color.Gray, Color.Violet, Color.Rose, Color.Black];
-
-define AllColorNames: ["White", "Yellow", "Green", "Purple", "Red",
-                       "Blue", "Aqua", "Orange", "SkyBlue", "Turquoise",
-                       "LimeGreen", "Gray", "Violet", "Rose", "Black"];
-
-define ColorValues(Color c): (c == Color.White)     ? [255, 255, 255, 255] :
-                             (c == Color.Yellow)    ? [255, 255,   0, 255] :
-                             (c == Color.Green)     ? [ 69, 255,  87, 255] :
-                             (c == Color.Purple)    ? [161,  73, 197, 255] :
-                             (c == Color.Red)       ? [200,   0,  19, 255] :
-                             (c == Color.Blue)      ? [ 39, 170, 255, 255] :
-                             (c == Color.Aqua)      ? [  0, 234, 234, 255] :
-                             (c == Color.Orange)    ? [236, 153,   0, 255] :
-                             (c == Color.SkyBlue)   ? [108, 190, 244, 255] :
-                             (c == Color.Turquoise) ? [  0, 230, 151, 255] :
-                             (c == Color.LimeGreen) ? [160, 232,  27, 255] :
-                             (c == Color.Gray)      ? [127, 127, 127, 255] :
-                             (c == Color.Violet)    ? [100,  50, 255, 255] :
-                             (c == Color.Rose)      ? [255,  50, 145, 255] :
-                             (c == Color.Black)     ? [  0,   0,   0, 255] : null;
+    public static Color[] AllColors: 
+        [Color.White, Color.Yellow, Color.Green, Color.Purple, Color.Red,
+         Color.Blue, Color.Aqua, Color.Orange, Color.SkyBlue, Color.Turquoise,
+         Color.LimeGreen, Color.Gray, Color.Violet, Color.Rose, Color.Black];
+    public static String[] AllColorNames:
+        ["White", "Yellow", "Green", "Purple", "Red",
+         "Blue", "Aqua", "Orange", "SkyBlue", "Turquoise",
+         "LimeGreen", "Gray", "Violet", "Rose", "Black"];
+    public static Number[][] AllColorComponents: 
+        [[255, 255, 255, 255], [255, 255,   0, 255], [ 69, 255,  87, 255], 
+         [161,  73, 197, 255], [200,   0,  19, 255], [ 39, 170, 255, 255], 
+         [  0, 234, 234, 255], [236, 153,   0, 255], [108, 190, 244, 255], 
+         [  0, 230, 151, 255], [160, 232,  27, 255], [127, 127, 127, 255], 
+         [100,  50, 255, 255], [255,  50, 145, 255], [  0,   0,   0, 255]];
+}

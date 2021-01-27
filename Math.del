@@ -1,5 +1,9 @@
-define Floor(define n): RoundToInteger(n, Rounding.Down);
-define Ceiling(define n): RoundToInteger(n, Rounding.Up);
-define Quotient(define a, define b): Floor(a/b);
-define Clamp(define n, define min, define max): Max(min, Min(n, max));
-define IsInRangeIncl(define n, define min, define max): n >= min && n <= max;
+class Math {
+    public static Number PI: Pi();
+    public static Number E: 2.71828182845904523536;
+    public static Number Floor(Number n): RoundToInteger(n, Rounding.Down);
+    public static Number Ceiling(Number n): RoundToInteger(n, Rounding.Up);
+    public static Number Quotient(Number n, Number d): Floor(n/d);
+    public static Number Clamp(Number n, Number min, Number max): Max(min, Min(n, max));
+    public static Number IsInRangeIncl(Number n, Number min, Number max): n >= min && n <= max;
+}
