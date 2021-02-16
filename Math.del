@@ -5,5 +5,9 @@ class Math {
     public static Number Ceiling(Number n): RoundToInteger(n, Rounding.Up);
     public static Number Quotient(Number n, Number d): Floor(n/d);
     public static Number Clamp(Number n, Number min, Number max): Max(min, Min(n, max));
-    public static Number IsInRangeIncl(Number n, Number min, Number max): n >= min && n <= max;
+    public static Number IsInRange(Number n, Number min, Number max): n >= min && n <= max;
+    public static Vector KinematicMotion3D(Vector startPos, Vector startVelocity, Vector acceleration, Number time):
+        startPos + startVelocity*time + 0.5*acceleration*time*time;
+    public static Number KinematicMotion1D(Number startPos, Number startVelocity, Number acceleration, Number time):
+        startPos + startVelocity*time + 0.5*acceleration*time*time;
 }
