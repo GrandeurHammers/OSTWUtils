@@ -9,4 +9,4 @@ enum SpectatorButton
     Z = Button.Ultimate
 }
 
-define IsHostSpectator(): !ArrayContains(AllPlayers(), HostPlayer());
+Boolean IsHostSpectator(): !ArrayContains(AllPlayers(), HostPlayer());
