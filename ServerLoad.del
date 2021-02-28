@@ -1,5 +1,5 @@
 import "Colors.del";
-import "AltFont.del";
+import "Miscellaneous.del";
 
 rule: "[ServerLoad.del] Track and show server load"
 {
