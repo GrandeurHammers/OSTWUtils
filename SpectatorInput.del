@@ -1,12 +1,12 @@
-enum SpectatorButton
+class SpectatorButton
 {
-    Q = Button.Ability1,
-    E = Button.Interact,
-    Shift = Button.SecondaryFire,
-    Ctrl = Button.PrimaryFire,
-    M1 = Button.Ability2,
-    B = Button.Jump,
-    Z = Button.Ultimate
+    public static Button Q: Button.Ability1;
+    public static Button E: Button.Interact;
+    public static Button Shift: Button.SecondaryFire;
+    public static Button Ctrl: Button.PrimaryFire;
+    public static Button M1: Button.Ability2;
+    public static Button B: Button.Jump;
+    public static Button Z: Button.Ultimate;
 }
 
 Boolean IsHostSpectator(): !ArrayContains(AllPlayers(), HostPlayer());

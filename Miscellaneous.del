@@ -1,0 +1,3 @@
+String AltFont(Any s): <" <0> ", s>;
+
+Boolean IsHero(Hero hero, Player player = EventPlayer()): (HeroOf(player) == hero) || (HeroBeingDuplicated(player) == hero);

@@ -7,4 +7,25 @@ class OnScreenText {
     private static Vector yAxis(Vector zAxis):
         DirectionFromAngles(HorizontalAngleFromDirection(zAxis), VerticalAngleFromDirection(zAxis) - 90);
     private static Vector xAxis(Vector zAxis): CrossProduct(zAxis, yAxis(zAxis));
+
+    public static Any CreateOnScreenText(
+        Player | Player[] VisibleTo = EventPlayer(),
+        Any Header = "",
+        Number PositionX = 0,
+        Number PositionY = 0,
+        Number Scale = 1,
+        InworldTextRev Reevaluation = InworldTextRev.VisibleToPositionStringAndColor,
+        Color Color = Color.White,
+        Spectators Spectators = Spectators.DefaultVisibility
+    ):
+        CreateInWorldText(
+            VisibleTo: VisibleTo,
+            Header: Header,
+            Position: PlayerRender(LocalPlayer(), PositionX, PositionY),
+            Scale: Scale,
+            Clipping: Clipping.DoNotClip,
+            Reevaluation: Reevaluation,
+            TextColor: Color,
+            Spectators: Spectators
+        );
 }
