@@ -17,7 +17,7 @@ class EasingFunctions {
 
     public static Number EaseOutSine(Number frac): SineFromRadians(frac*Math.PI/2);
 
-    public static Number EaseInOutSine(Number frac): -(CosineFromDegrees(Math.PI*frac) - 1) / 2;
+    public static Number EaseInOutSine(Number frac): -1*(CosineFromRadians(Math.PI*frac) - 1) / 2;
 
     public static Number EaseInQuad(Number frac): pow2(frac);
 
