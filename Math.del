@@ -11,9 +11,11 @@ class Math {
     public static Number KinematicMotion1D(Number startPos, Number startVelocity, Number acceleration, Number time):
         startPos + startVelocity*time + 0.5*acceleration*time*time;
     
-    public static Vector Projection(Vector toProject, Vector onto):
+    public static Vector VectorProjection(Vector toProject, Vector onto):
         Normalize(onto) * DotProduct(toProject, Normalize(onto));
 
-    public static Vector Rejection(Vector toReject, Vector onto):
-        toReject - Projection(toReject, onto);
+    public static Vector VectorRejection(Vector toReject, Vector onto):
+        toReject - VectorProjection(toReject, onto);
+    public static Vector VectorReflection(Vector initial, Vector normal):
+        initial - 2*(DotProduct(initial, Normalize(normal)))*Normalize(normal);
 }

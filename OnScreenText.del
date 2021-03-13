@@ -21,7 +21,7 @@ class OnScreenText {
         CreateInWorldText(
             VisibleTo: VisibleTo,
             Header: Header,
-            Position: PlayerRender(LocalPlayer(), PositionX, PositionY),
+            Position: UpdateEveryFrame(PlayerRender(LocalPlayer(), PositionX, PositionY)),
             Scale: Scale,
             Clipping: Clipping.DoNotClip,
             Reevaluation: Reevaluation,
