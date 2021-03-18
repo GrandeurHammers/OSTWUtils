@@ -1,0 +1,221 @@
+/*
+
+//////////////////////////////
+// Blind
+//////////////////////////////
+
+import "TestChamberSettings.lobby";
+import "Diagnostics.del";
+import "Math.del";
+
+globalvar Diagnostics disp = new Diagnostics(
+    ShowServerLoadAverage:  true, 
+    ShowServerLoadPeak:     true, 
+    ShowEntityCount:        true,
+    ShowTextCount:          true,
+    ShowClassMemory:        true
+);
+
+playervar Boolean isBlinded;
+
+Any CreateBlindOrb(Vector pos):
+    CreateEffect(
+        VisibleTo:          LocalPlayer().isBlinded ? LocalPlayer() : null,
+        Type:               Effect.Orb,
+        Color:              Color.Black,
+        Position:           UpdateEveryFrame(Math.WorldVectorForPlayerWithPitch(pos, LocalPlayer(), true)),
+        Reevaluation:       EffectRev.VisibleToPositionAndRadius
+    );
+
+rule: "Blind effects"
+{
+    CreateBlindOrb(Vector(-1.05,    0, 0.9));
+    CreateBlindOrb(Vector(-1.05, -0.7, 0.9));
+    CreateBlindOrb(Vector(-1.05,  0.7, 0.9));
+
+    CreateBlindOrb(Vector(-0.35,    0, 0.9));
+    CreateBlindOrb(Vector(-0.35, -0.7, 0.9));
+    CreateBlindOrb(Vector(-0.35,  0.7, 0.9));
+
+    CreateBlindOrb(Vector( 0.35,    0, 0.9));
+    CreateBlindOrb(Vector( 0.35, -0.7, 0.9));
+    CreateBlindOrb(Vector( 0.35,  0.7, 0.9));
+
+    CreateBlindOrb(Vector( 1.05,    0, 0.9));
+    CreateBlindOrb(Vector( 1.05, -0.7, 0.9));
+    CreateBlindOrb(Vector( 1.05,  0.7, 0.9));
+}
+
+rule: "Toggle blind"
+Event.OngoingPlayer
+if(IsButtonHeld(EventPlayer(), Button.Interact))
+{
+    isBlinded = !isBlinded;
+}
+
+//*/
+
+
+//////////////////////////////
+// Camera test - third person
+//////////////////////////////
+
+import "Diagnostics.del";
+
+globalvar Diagnostics disp = new Diagnostics(
+    ShowServerLoadAverage:  true, 
+    ShowServerLoadPeak:     true
+);
+
+globalvar Player lastPlayer;
+globalvar Player nextPlayer;
+
+rule: "Test cam transition"
+Event.OngoingPlayer
+if(IsButtonHeld(EventPlayer(), Button.Interact))
+{
+    lastPlayer = nextPlayer;
+    nextPlayer = RandomValueInArray(RemoveFromArray(AllPlayers(), lastPlayer));
+    DoCameraTransition(
+        player:                 AllPlayers(),
+        startEyePosition:       lastPlayer == null ? null : EyePosition(lastPlayer) + WorldVectorOf(Vector(-0.5, 0.25, 0), lastPlayer) - 3 * FacingDirectionOf(lastPlayer),
+        startLookAtPosition:    EyePosition(lastPlayer) + 50 * FacingDirectionOf(lastPlayer),
+        endEyePosition:         EyePosition(nextPlayer) + WorldVectorOf(Vector(-0.5, 0.25, 0), nextPlayer) - 3 * FacingDirectionOf(nextPlayer),
+        endLookAtPosition:      EyePosition(nextPlayer) + 50 * FacingDirectionOf(nextPlayer),
+        transDuration:          2,
+        easingFunction:         Ease.InOutCubic
+    );
+    WaitUntil(!IsButtonHeld(EventPlayer(), Button.Interact), 99999);
+}
+
+//*/
+
+
+/*
+//////////////////////////////
+// Camera test - randomized
+//////////////////////////////
+
+globalvar Vector lastEyePosition;
+globalvar Vector lastLookAtPosition;
+globalvar Vector nextEyePosition;
+globalvar Vector nextLookAtPosition;
+rule: "Test cam transition"
+Event.OngoingPlayer
+if(IsButtonHeld(EventPlayer(), Button.Interact))
+{
+    nextEyePosition = Vector(
+        RandomInteger(-16, 16),
+        RandomInteger(1, 10),
+        RandomInteger(-16, 16)
+    );
+    nextLookAtPosition = Vector(
+        RandomInteger(-16, 16),
+        RandomInteger(1, 10),
+        RandomInteger(-16, 16)
+    );
+    DoCameraTransition(
+        player:                 AllPlayers(),
+        startEyePosition:       EvaluateOnce(lastEyePosition),
+        startLookAtPosition:    EvaluateOnce(lastLookAtPosition),
+        endEyePosition:         nextEyePosition,
+        endLookAtPosition:      nextLookAtPosition,
+        transDuration:          2,
+        easingFunction:         Ease.InOutCubic
+    );
+    lastEyePosition = nextEyePosition;
+    lastLookAtPosition = nextLookAtPosition;
+    Wait(1);
+    WaitUntil(!IsButtonHeld(EventPlayer(), Button.Interact), 99999);
+}
+
+//*/
+
+/*
+//////////////////////////////
+// Cam reeval bug report
+//////////////////////////////
+
+rule: "Init"
+Event.OnPlayerJoin
+{
+    DisallowButton(EventPlayer(), Button.Ultimate);
+    DisallowButton(EventPlayer(), Button.Ability2);
+}
+
+globalvar Any expectedOrb;
+globalvar Any actualOrb;
+
+rule: "Start look"
+Event.OngoingPlayer
+if(IsButtonHeld(EventPlayer(), Button.Ability2))
+{
+    DestroyEffect(expectedOrb);
+    expectedOrb = CreateEffect(
+        VisibleTo:      AllPlayers(),
+        Type:           Effect.Orb,
+        Color:          Color.Blue,
+        Position:       Vector(16, 0.7, 19.5) + 2 * Right() * (TotalTimeElapsed() - EvaluateOnce(TotalTimeElapsed()))
+    );
+    if(!actualOrb) actualOrb = CreateEffect(
+        VisibleTo:      AllPlayers(),
+        Type:           Effect.Orb,
+        Color:          Color.Red,
+        Position:       Vector(16, 1.5, 19.5) + 2 * Right() * (TotalTimeElapsed() - EvaluateOnce(TotalTimeElapsed()))
+    );
+    StartCamera(
+        Player:         AllPlayers(),
+        EyePosition:    Vector(0, 5, 0),
+        LookAtPosition: UpdateEveryFrame(Vector(16, 1, 19.5) + 2 * Right() * (TotalTimeElapsed() - EvaluateOnce(TotalTimeElapsed()))),
+        BlendSpeed:     0
+    );
+}
+
+rule: "Stop look"
+Event.OngoingPlayer
+if(IsButtonHeld(EventPlayer(), Button.Ultimate))
+{
+    DestroyEffect(expectedOrb);
+    DestroyEffect(actualOrb);
+    expectedOrb = null;
+    actualOrb = null;
+    StopCamera(AllPlayers());
+}
+
+//*/
+
+/*
+//////////////////////////////
+// Crosshair
+//////////////////////////////
+
+import "OnScreenText.del";
+
+playervar Boolean hasAlternateCrosshair;
+rule: "crosshair"
+Event.OngoingPlayer
+{
+    hasAlternateCrosshair = true;
+    OnScreenText.CreateOnScreenText(
+        VisibleTo:      hasAlternateCrosshair ? EventPlayer() : null,
+        Header:         "┼",
+        PositionX:      0,
+        PositionY:      -0.005,
+        Scale:          3.5,
+        Reevaluation:   InworldTextRev.VisibleToPositionAndString,
+        Color:          CustomColor(0, 255, 13, 50),
+        Spectators:     Spectators.VisibleNever
+    );
+    OnScreenText.CreateOnScreenText(
+        VisibleTo:      hasAlternateCrosshair ? EventPlayer() : null,
+        Header:         "●",
+        PositionX:      0.004,
+        PositionY:      0.003,
+        Scale:          3.5,
+        Reevaluation:   InworldTextRev.VisibleToPositionAndString,
+        Color:          CustomColor(255, 255, 255, 1),
+        Spectators:     Spectators.VisibleNever
+    );
+}
+
+//*/

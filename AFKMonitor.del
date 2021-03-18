@@ -28,7 +28,7 @@ if(HasSpawned())
     ChaseVariableAtRate(AFKTimer, 0, 1, RateChaseReevaluation.None);
 }
 
-rule: "[AFKMonitor.del] Main loop"
+rule: "[AFKMonitor.del] Main loop (5Hz)"
 if(monitorEnabled)
 {
     while(true) 
@@ -42,4 +42,13 @@ if(monitorEnabled)
         }
         Wait(0.2);
     }
+}
+
+rule: "[AFKMonitor.del] AFK check and wait until not afk (active)"
+Event.OngoingPlayer
+if(AFKTimer == 0)
+{
+    isAFK = true;
+    WaitUntil(ThrottleOf() != lastThrottle || FacingDirectionOf() != lastFacing, 9999);
+    isAFK = false;
 }

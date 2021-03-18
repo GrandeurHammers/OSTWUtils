@@ -25,16 +25,16 @@ class Diagnostics
 
     private Any[] huds;
 
-    public Diagnostics(Boolean VisibleToHostOnly = false,
-                              Boolean ShowServerLoad = false,
-                              Boolean ShowServerLoadAverage = true,
-                              Boolean ShowServerLoadPeak = false,
-                              Boolean ShowEntityCount = false,
-                              Boolean PlayMoreEffectsEnabled = false,
-                              Boolean ShowTextCount = false,
-                              Boolean ShowDummyBotCount = false,
-                              Boolean MoreDummyBotsEnabled = false,
-                              Boolean ShowClassMemory = false)
+    public Diagnostics(Boolean VisibleToHostOnly        = false,
+                       Boolean ShowServerLoad           = false,
+                       Boolean ShowServerLoadAverage    = false,
+                       Boolean ShowServerLoadPeak       = false,
+                       Boolean ShowEntityCount          = false,
+                       Boolean PlayMoreEffectsEnabled   = false,
+                       Boolean ShowTextCount            = false,
+                       Boolean ShowDummyBotCount        = false,
+                       Boolean MoreDummyBotsEnabled     = false,
+                       Boolean ShowClassMemory          = false)
     {
         huds = [];
         sortOrder++;
