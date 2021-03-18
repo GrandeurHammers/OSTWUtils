@@ -1,3 +1,5 @@
+import "Math.del";
+
 class ComponentColor {
     public Number Red;
     public Number Green;
@@ -20,13 +22,16 @@ class ComponentColor {
 }
 
 class Colors {
-    public static Color Gradient(ComponentColor color1, ComponentColor color2, Number fraction):
+    public static Color LinearGradient(ComponentColor color1, ComponentColor color2, Number fraction):
         CustomColor(
             LinearInterpolate(color1.Red,   color2.Red,   fraction),
             LinearInterpolate(color1.Green, color2.Green, fraction),
             LinearInterpolate(color1.Blue,  color2.Blue,  fraction),
             LinearInterpolate(color1.Alpha, color2.Alpha, fraction)
         );
+    
+    public static Color StepGradient(Color[] colors, Number fraction):
+        colors[Math.Floor(Math.Clamp(fraction, 0, 1) * 0.999 * CountOf(colors))];
 
     public static Color[] AllColors: 
         [Color.White, Color.Yellow, Color.Green, Color.Purple, Color.Red,

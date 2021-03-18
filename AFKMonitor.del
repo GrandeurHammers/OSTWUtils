@@ -1,0 +1,45 @@
+import "Diagnostics.del";
+
+globalvar Diagnostics disp = new Diagnostics();
+globalvar Boolean monitorEnabled = WorkshopSettingToggle(
+    Category:       "AFK Monitor",
+    Name:           "AFK Monitor",
+    Default:        true,
+    SortOrder:      0
+);
+globalvar Number AFKDelay = WorkshopSettingInteger(
+    Category:       "AFK Monitor",
+    Name:           "Time before AFK",
+    Default:        5,
+    Min:            3,
+    Max:            60,
+    SortOrder:      1
+);
+playervar Boolean isAFK = false;
+playervar Number AFKTimer = AFKDelay;
+playervar Vector lastFacing = Vector(0,0,0);
+playervar Vector lastThrottle = Vector(0,0,0);
+
+rule: "[AFKMonitor.del] Player spawn init"
+Event.OngoingPlayer
+if(monitorEnabled)
+if(HasSpawned())
+{
+    ChaseVariableAtRate(AFKTimer, 0, 1, RateChaseReevaluation.None);
+}
+
+rule: "[AFKMonitor.del] Main loop"
+if(monitorEnabled)
+{
+    while(true) 
+    {
+        foreach(Player p in AllPlayers())
+        {
+            if(ThrottleOf(p) != p.lastThrottle || FacingDirectionOf(p) != p.lastFacing)
+                p.AFKTimer = AFKDelay;
+            p.lastFacing = FacingDirectionOf(p);
+            p.lastThrottle = ThrottleOf(p);
+        }
+        Wait(0.2);
+    }
+}

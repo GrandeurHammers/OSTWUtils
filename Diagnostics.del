@@ -1,0 +1,93 @@
+import "Colors.del";
+import "Miscellaneous.del";
+
+public Number DummyBotCount(): CountOf(FilteredArray(AllPlayers(), IsDummyBot(ArrayElement())));
+public Number HumanAndAICount(): CountOf(FilteredArray(AllPlayers(), !IsDummyBot(ArrayElement())));
+
+class Diagnostics
+{
+    private static Number sortOrder = -1000;
+    private static Color[] gradientColors = [Color.Green, Color.Yellow, Color.Orange, Color.Red];
+
+    private static Any CreateReadout(in String Text, in Color Color, in Boolean HostVisibility)
+    {
+        sortOrder++;
+        return CreateHudText(
+            VisibleTo:      EvaluateOnce(HostVisibility) ? HostPlayer() : AllPlayers(),
+            Text:           Text,
+            Location:       Location.Right,
+            TextColor:      Color,
+            SortOrder:      sortOrder,
+            Reevaluation:   HudTextRev.VisibleToStringAndColor,
+            Spectators:     Spectators.VisibleAlways
+        );
+    }
+
+    private Any[] huds;
+
+    public Diagnostics(Boolean VisibleToHostOnly = false,
+                              Boolean ShowServerLoad = false,
+                              Boolean ShowServerLoadAverage = true,
+                              Boolean ShowServerLoadPeak = false,
+                              Boolean ShowEntityCount = false,
+                              Boolean PlayMoreEffectsEnabled = false,
+                              Boolean ShowTextCount = false,
+                              Boolean ShowDummyBotCount = false,
+                              Boolean MoreDummyBotsEnabled = false,
+                              Boolean ShowClassMemory = false)
+    {
+        huds = [];
+        sortOrder++;
+        huds += CreateHudText(
+            VisibleTo:      EvaluateOnce(VisibleToHostOnly) ? HostPlayer() : AllPlayers(),
+            Header:         root.AltFont("Diagnostics"),
+            Location:       Location.Right,
+            HeaderColor:    Color.Turquoise,
+            SortOrder:      sortOrder,
+            Reevaluation:   HudTextRev.VisibleToAndString,
+            Spectators:     Spectators.VisibleAlways
+        );
+
+        if(ShowServerLoad) huds += CreateReadout(
+            Text:           <"[ <0> ]  Server Load", ServerLoad()>,
+            Color:          Colors.StepGradient(gradientColors, ServerLoad()/255),
+            HostVisibility: VisibleToHostOnly
+        );
+
+        if(ShowServerLoadAverage) huds += CreateReadout(
+            Text:           <"[ <0> ]  Server Load Average", ServerLoadAverage()>,
+            Color:          Colors.StepGradient(gradientColors, ServerLoadAverage()/255),
+            HostVisibility: VisibleToHostOnly
+        );
+
+        if(ShowServerLoadPeak) huds += CreateReadout(
+            Text:           <"[ <0> ]  Server Load Peak", ServerLoadPeak()>,
+            Color:          Colors.StepGradient(gradientColors, ServerLoadPeak()/255),
+            HostVisibility: VisibleToHostOnly
+        );
+
+        if(ShowEntityCount) huds += CreateReadout(
+            Text:           <"[ <0> / <1> ]  Entity Count", EntityCount(), 128*(1 + EvaluateOnce(PlayMoreEffectsEnabled))>,
+            Color:          Colors.StepGradient(gradientColors, EntityCount()/(128*(1 + EvaluateOnce(PlayMoreEffectsEnabled)))),
+            HostVisibility: VisibleToHostOnly
+        );
+
+        if(ShowTextCount) huds += CreateReadout(
+            Text:           <"[ <0> / <1> ]  Text Count", TextCount(), 128>,
+            Color:          Colors.StepGradient(gradientColors, TextCount()/128),
+            HostVisibility: VisibleToHostOnly
+        );
+
+        if(ShowDummyBotCount) huds += CreateReadout(
+            Text:           <"[ <0> / <1> ]  Dummy Bot Count", root.DummyBotCount(), 12 * (1 + EvaluateOnce(MoreDummyBotsEnabled)) - root.HumanAndAICount()>,
+            Color:          Colors.StepGradient(gradientColors, root.DummyBotCount()/(12 * (1 + EvaluateOnce(MoreDummyBotsEnabled)) - root.HumanAndAICount())),
+            HostVisibility: VisibleToHostOnly
+        );
+        
+        if(ShowClassMemory) huds += CreateReadout(
+            Text:           <"[ <0>% ]  Class Memory", ClassMemory()>,
+            Color:          Colors.StepGradient(gradientColors, ClassMemory()/100),
+            HostVisibility: VisibleToHostOnly
+        );
+    }
+}

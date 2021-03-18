@@ -1,3 +1,140 @@
+import "Math.del";
+import "EasingFunctions.del";
+
 String AltFont(Any s): <" <0> ", s>;
 
 Boolean IsHero(Hero hero, Player player = EventPlayer()): (HeroOf(player) == hero) || (HeroBeingDuplicated(player) == hero);
+
+void StartCamWith1PTransition(in Player | Player[] player = EventPlayer(), 
+                              in Player | Vector eyePosition = Vector(0,0,0), 
+                              in Player | Vector lookAtPosition = Vector(0,0,0), 
+                              in Number transDuration = 0.2)
+{
+    StartCamera(
+        Player:         player,
+        EyePosition:    UpdateEveryFrame(LinearInterpolate(
+            EyePosition(LocalPlayer()),
+            eyePosition, 
+            Math.Clamp((TotalTimeElapsed() - EvaluateOnce(TotalTimeElapsed())) / transDuration, 0, 1))),
+        LookAtPosition: UpdateEveryFrame(LinearInterpolate(
+            EyePosition(LocalPlayer()) + 5*FacingDirectionOf(LocalPlayer()),
+            lookAtPosition, 
+            Math.Clamp((TotalTimeElapsed() - EvaluateOnce(TotalTimeElapsed())) / transDuration, 0, 1))),
+        BlendSpeed:     0
+    );
+}
+
+void StopCamWith1PTransition(in Player | Player[] player = EventPlayer(), 
+                             in Player | Vector eyePosition = Vector(0,0,0), 
+                             in Player | Vector lookAtPosition = Vector(0,0,0), 
+                             in Number transDuration = 0.2)
+{
+    StopCamera(player);
+    StartCamera(
+        Player:         player,
+        EyePosition:    UpdateEveryFrame(LinearInterpolate(
+            eyePosition, 
+            EyePosition(LocalPlayer()),
+            Math.Clamp((TotalTimeElapsed() - EvaluateOnce(TotalTimeElapsed())) / transDuration, 0, 1))),
+        LookAtPosition: UpdateEveryFrame(LinearInterpolate(
+            lookAtPosition, 
+            EyePosition(LocalPlayer()) + 5*FacingDirectionOf(LocalPlayer()),
+            Math.Clamp((TotalTimeElapsed() - EvaluateOnce(TotalTimeElapsed())) / transDuration, 0, 1))),
+        BlendSpeed:     0
+    );
+    WaitAsync(transDuration, () => { StopCamera(player); } );
+}
+
+void DoCameraTransition(in Player | Player[] player = EventPlayer(), 
+                           in Player | Vector startEyePosition = null, 
+                           in Player | Vector startLookAtPosition = Vector(0,0,0),
+                           in Player | Vector endEyePosition = null,
+                           in Player | Vector endLookAtPosition = Vector(0,0,0),
+                           in Number transDuration = 1,
+                           MacroLambda<Number, Number> easingFunction /*= Ease.InOutSine*/)
+{
+    StopCamera();
+    StartCamera(
+        Player:         player,
+        EyePosition:    UpdateEveryFrame(LinearInterpolate(
+            startEyePosition == null ? EyePosition(LocalPlayer()) : startEyePosition, 
+            endEyePosition   == null ? EyePosition(LocalPlayer()) : endEyePosition,
+            easingFunction(Math.Clamp((TotalTimeElapsed() - EvaluateOnce(TotalTimeElapsed())) / transDuration, 0, 1)))),
+        LookAtPosition: UpdateEveryFrame(LinearInterpolate(
+            startEyePosition == null ? EyePosition(LocalPlayer()) + FacingDirectionOf(LocalPlayer()) : startLookAtPosition, 
+            endEyePosition   == null ? EyePosition(LocalPlayer()) + FacingDirectionOf(LocalPlayer()) : endLookAtPosition,
+            easingFunction(Math.Clamp((TotalTimeElapsed() - EvaluateOnce(TotalTimeElapsed())) / transDuration, 0, 1)))),
+        BlendSpeed:     0
+    );
+    Wait(transDuration + 0.1);
+    if(endEyePosition == null) StopCamera(player);
+    else StartCamera(
+        Player:         player,
+        EyePosition:    UpdateEveryFrame(endEyePosition),
+        LookAtPosition: UpdateEveryFrame(endLookAtPosition),
+        BlendSpeed:     0
+    );
+}
+
+//////////////////////////////
+// TESTING STUFF
+//////////////////////////////
+
+import "Diagnostics.del";
+
+globalvar Diagnostics disp = new Diagnostics();
+
+globalvar Player lastPlayer;
+globalvar Player nextPlayer;
+
+rule: "Test cam transition"
+Event.OngoingPlayer
+if(IsButtonHeld(EventPlayer(), Button.Interact))
+{
+    lastPlayer = nextPlayer;
+    nextPlayer = RandomValueInArray(RemoveFromArray(AllPlayers(), lastPlayer));
+    DoCameraTransition(
+        player:                 AllPlayers(),
+        startEyePosition:       lastPlayer == null ? null : EyePosition(lastPlayer) + WorldVectorOf(Vector(-0.5, 0.25, 0), lastPlayer) - 3 * FacingDirectionOf(lastPlayer),
+        startLookAtPosition:    EyePosition(lastPlayer) + 50 * FacingDirectionOf(lastPlayer),
+        endEyePosition:         EyePosition(nextPlayer) + WorldVectorOf(Vector(-0.5, 0.25, 0), nextPlayer) - 3 * FacingDirectionOf(nextPlayer),
+        endLookAtPosition:      EyePosition(nextPlayer) + 50 * FacingDirectionOf(nextPlayer),
+        transDuration:          2,
+        easingFunction:         Ease.InOutCubic
+    );
+    WaitUntil(!IsButtonHeld(EventPlayer(), Button.Interact), 99999);
+}
+
+/*
+globalvar Vector lastEyePosition;
+globalvar Vector lastLookAtPosition;
+globalvar Vector nextEyePosition;
+globalvar Vector nextLookAtPosition;
+rule: "Test cam transition"
+Event.OngoingPlayer
+if(IsButtonHeld(EventPlayer(), Button.Interact))
+{
+    nextEyePosition = Vector(
+        RandomInteger(-16, 16),
+        RandomInteger(1, 10),
+        RandomInteger(-16, 16)
+    );
+    nextLookAtPosition = Vector(
+        RandomInteger(-16, 16),
+        RandomInteger(1, 10),
+        RandomInteger(-16, 16)
+    );
+    DoCameraTransition(
+        player:                 AllPlayers(),
+        startEyePosition:       EvaluateOnce(lastEyePosition),
+        startLookAtPosition:    EvaluateOnce(lastLookAtPosition),
+        endEyePosition:         nextEyePosition,
+        endLookAtPosition:      nextLookAtPosition,
+        transDuration:          2,
+        easingFunction:         Ease.InOutCubic
+    );
+    lastEyePosition = nextEyePosition;
+    lastLookAtPosition = nextLookAtPosition;
+    Wait(1);
+    WaitUntil(!IsButtonHeld(EventPlayer(), Button.Interact), 99999);
+}
