@@ -1,0 +1,38 @@
+{
+  "Modes": {
+    "Assault": {
+      "Limit Roles": "2 Of Each Role Per Team",
+      "Enabled": false
+    },
+    "Control": {
+      "Limit Roles": "2 Of Each Role Per Team",
+      "Enabled": false
+    },
+    "Escort": {
+      "Limit Roles": "2 Of Each Role Per Team",
+      "Enabled": false
+    },
+    "Hybrid": {
+      "Limit Roles": "2 Of Each Role Per Team",
+      "Enabled": false
+    },
+    "Skirmish": {
+      "Enabled Maps": [
+        "Workshop Chamber"
+      ],
+      "Hero Limit": "Off",
+      "Respawn Time Scalar": 30.0
+    }
+  },
+  "Heroes": {
+    "General": {
+      "General": {
+        "Ability Cooldown Time": 10
+      }
+    }
+  },
+  "Extensions": {
+    "Energy Explosion Effects": true,
+    "Explosion Sounds": true
+  }
+}

@@ -1,6 +1,10 @@
 import "Diagnostics.del";
 
-globalvar Diagnostics disp = new Diagnostics();
+globalvar Diagnostics disp = new Diagnostics(
+    ShowServerLoadAverage:  true, 
+    ShowServerLoadPeak:     true
+);
+
 globalvar Boolean monitorEnabled = WorkshopSettingToggle(
     Category:       "AFK Monitor",
     Name:           "AFK Monitor",

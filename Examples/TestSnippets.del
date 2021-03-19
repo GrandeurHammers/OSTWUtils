@@ -1,12 +1,101 @@
-/*
+import "TestChamberSettings.lobby";
+import "../Diagnostics.del";
+import "../Miscellaneous.del";
 
+globalvar Diagnostics disp = new Diagnostics(
+    ShowServerLoadAverage:  true, 
+    ShowServerLoadPeak:     true
+);
+
+playervar Vector[] posTimeline = [];
+playervar Vector[] dirTimeline = [];
+playervar Boolean isRewinding = false;
+Vector posFromEyePos(Vector pos): pos + VectorTowards(EyePosition(), PositionOf());
+Number pollDelay: 4 * 0.016;
+Number timelineLength: 3;
+Number rewindDuration: 1;
+Number timeDelta: TotalTimeElapsed() - EvaluateOnce(TotalTimeElapsed());
+rule: "Record timeline"
+Event.OngoingPlayer
+if(HasSpawned())
+{
+    CreateEffect(
+        VisibleTo:      EventPlayer(),
+        Type:           Effect.Orb,
+        Color:          Color.SkyBlue,
+        Position:       LastOf(posTimeline),
+        Reevaluation:   EffectRev.PositionAndRadius
+    );
+    while(true)
+    {
+        if(!isRewinding)
+        {
+            posTimeline = Append(EyePosition(), posTimeline);
+            dirTimeline = Append(EyePosition() + FacingDirectionOf(), dirTimeline);
+            posTimeline = ArraySlice(posTimeline, 0, timelineLength / pollDelay);
+            dirTimeline = ArraySlice(dirTimeline, 0, timelineLength / pollDelay);
+        }
+        Wait(pollDelay);
+    }
+}
+
+rule: "Start rewind"
+Event.OngoingPlayer
+if(IsButtonHeld(EventPlayer(), Button.Interact))
+{
+    if(CountOf(posTimeline) < timelineLength / pollDelay) 
+    {
+        SmallMessage(EventPlayer(), "Not ready yet");
+        PlayEffect(EventPlayer(), PlayEffect.ExplosionSound, Color.White, EventPlayer(), 100);
+    }
+    else
+    {
+        isRewinding = true;
+        PlayEffect(AllPlayers(), PlayEffect.TracerRecallDisappearEffect, <Color>TeamOf(), EventPlayer());
+        PlayEffect(AllPlayers(), PlayEffect.TracerRecallDisappearSound, <Color>TeamOf(), EventPlayer(), 100);
+        StunWithoutEffects(EventPlayer(), null, rewindDuration);
+        StartForcingPlayerPosition(EventPlayer(), PositionOf(), false);
+        SetStatus(EventPlayer(), null, Status.PhasedOut, rewindDuration);
+        SetInvisible(EventPlayer(), InvisibleTo.All);
+        StartCamera(
+            Player:         EventPlayer(),
+            EyePosition:    UpdateEveryFrame(LinearInterpolate(
+                posTimeline[Math.Floor(timelineLength * timeDelta / pollDelay / (rewindDuration * 0.9))],
+                posTimeline[Math.Ceiling(timelineLength * timeDelta / pollDelay / (rewindDuration * 0.9))],
+                (timelineLength * timeDelta / pollDelay / (rewindDuration * 0.9)) - Math.Floor(timelineLength * timeDelta / pollDelay / (rewindDuration * 0.9))
+            )),
+            LookAtPosition: UpdateEveryFrame(LinearInterpolate(
+                dirTimeline[Math.Floor(timelineLength * timeDelta / pollDelay / (rewindDuration * 0.9))],
+                dirTimeline[Math.Ceiling(timelineLength * timeDelta / pollDelay / (rewindDuration * 0.9))],
+                (timelineLength * timeDelta / pollDelay / (rewindDuration * 0.9)) - Math.Floor(timelineLength * timeDelta / pollDelay / (rewindDuration * 0.9))
+            )),
+            BlendSpeed:     0
+        );
+        Wait(rewindDuration);
+        StopForcingPlayerPosition();
+        Teleport(EventPlayer(), posFromEyePos(LastOf(posTimeline)));
+        SetFacing(EventPlayer(), LastOf(dirTimeline) - LastOf(posTimeline));
+        StopCamera(EventPlayer());
+        SetInvisible(EventPlayer(), InvisibleTo.None);
+        isRewinding = false;
+        MinWait();
+        PlayEffect(AllPlayers(), PlayEffect.TracerRecallReappearEffect, <Color>TeamOf(), EventPlayer());
+        PlayEffect(AllPlayers(), PlayEffect.TracerRecallReappearSound, <Color>TeamOf(), EventPlayer(), 100);
+    }
+}
+
+
+
+//*/
+
+/*
 //////////////////////////////
 // Blind
 //////////////////////////////
 
 import "TestChamberSettings.lobby";
-import "Diagnostics.del";
-import "Math.del";
+import "../Diagnostics.del";
+import "../Math.del";
 
 globalvar Diagnostics disp = new Diagnostics(
     ShowServerLoadAverage:  true, 
@@ -20,7 +109,7 @@ playervar Boolean isBlinded;
 
 Any CreateBlindOrb(Vector pos):
     CreateEffect(
-        VisibleTo:          LocalPlayer().isBlinded ? LocalPlayer() : null,
+        VisibleTo:          IsAlive(LocalPlayer()) && YOf(EyePosition(LocalPlayer())) < 0 ? LocalPlayer() : null,
         Type:               Effect.Orb,
         Color:              Color.Black,
         Position:           UpdateEveryFrame(Math.WorldVectorForPlayerWithPitch(pos, LocalPlayer(), true)),
@@ -46,21 +135,23 @@ rule: "Blind effects"
     CreateBlindOrb(Vector( 1.05,  0.7, 0.9));
 }
 
-rule: "Toggle blind"
+rule: "Fall"
 Event.OngoingPlayer
 if(IsButtonHeld(EventPlayer(), Button.Interact))
 {
-    isBlinded = !isBlinded;
+    DisableMovementCollisionWithEnvironment(EventPlayer(), true);
+    Wait(1);
+    EnableMovementCollisionWithEnvironment(EventPlayer());
 }
 
 //*/
 
-
+/*
 //////////////////////////////
 // Camera test - third person
 //////////////////////////////
 
-import "Diagnostics.del";
+import "../Diagnostics.del";
 
 globalvar Diagnostics disp = new Diagnostics(
     ShowServerLoadAverage:  true, 
@@ -189,7 +280,7 @@ if(IsButtonHeld(EventPlayer(), Button.Ultimate))
 // Crosshair
 //////////////////////////////
 
-import "OnScreenText.del";
+import "../OnScreenText.del";
 
 playervar Boolean hasAlternateCrosshair;
 rule: "crosshair"

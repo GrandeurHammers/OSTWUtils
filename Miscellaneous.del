@@ -76,3 +76,40 @@ void DoCameraTransition(in Player | Player[] player = EventPlayer(),
     );
 }
 
+Number TimeDelta(): TotalTimeElapsed() - EvaluateOnce(TotalTimeElapsed());
+
+void StunWithoutEffects(Player | Player[] Player = EventPlayer(), Player Assister = null, Number Duration = 0)
+{
+    CancelPrimaryAction(Player);
+    SetStatus(Player, Assister, Status.Rooted, Duration);
+    StartFacing(Player, null, 0);
+    DisallowButton(Player, Button.PrimaryFire);
+    DisallowButton(Player, Button.SecondaryFire);
+    DisallowButton(Player, Button.Ability1);
+    DisallowButton(Player, Button.Ability2);
+    DisallowButton(Player, Button.Ultimate);
+    DisallowButton(Player, Button.Interact);
+    DisallowButton(Player, Button.Jump);
+    DisallowButton(Player, Button.Melee);
+    DisallowButton(Player, Button.Reload);
+    DisallowButton(Player, Button.Crouch);
+    WaitAsync(Duration, () => {
+        ClearStunWithoutEffects(Player);
+    });
+}
+
+void ClearStunWithoutEffects(Player | Player[] Player = EventPlayer())
+{
+    ClearStatus(Player, Status.Rooted);
+    StopFacing(Player);
+    AllowButton(Player, Button.PrimaryFire);
+    AllowButton(Player, Button.SecondaryFire);
+    AllowButton(Player, Button.Ability1);
+    AllowButton(Player, Button.Ability2);
+    AllowButton(Player, Button.Ultimate);
+    AllowButton(Player, Button.Interact);
+    AllowButton(Player, Button.Jump);
+    AllowButton(Player, Button.Melee);
+    AllowButton(Player, Button.Reload);
+    AllowButton(Player, Button.Crouch);
+}
