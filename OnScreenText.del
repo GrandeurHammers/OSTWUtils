@@ -2,9 +2,9 @@ import "Math.del";
 
 class OnScreenText {
     public static Vector WorldRender(Vector eyePos, Vector facingDir, Number screenX, Number screenY):
-        Math.WorldVectorForPositionWithPitch(Vector(screenX, screenY - 0.2, 3), eyePos, facingDir, true);
+        Math.WorldVectorForPositionWithPitch(Vector(100 * screenX, 100 * (screenY - 0.2), 300), eyePos, facingDir, true);
     public static Vector PlayerRender(Player player, Number screenX, Number screenY):
-        Math.WorldVectorForPlayerWithPitch(Vector(screenX, screenY - 0.2, 3), player, true);
+        Math.WorldVectorForPlayerWithPitch(Vector(100 * screenX, 100 * (screenY - 0.2), 300), player, true);
 
     public static Any CreateOnScreenText(
         Player | Player[] VisibleTo = EventPlayer(),
