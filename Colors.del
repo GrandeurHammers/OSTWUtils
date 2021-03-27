@@ -60,7 +60,7 @@ class TeamBasedColor {
         friendly = _friendly;
     }
 
-    public Color Display(Player owner=EventPlayer(), Player viewer=EventPlayer()):
+    public Color Display(Player owner=EventPlayer(), Player viewer=LocalPlayer()):
         (owner==viewer || TeamOf(owner) == TeamOf(viewer)) ? friendly : enemy;
     
     public void SetEnemy(Color newEnemyColor = Color.Red) {
