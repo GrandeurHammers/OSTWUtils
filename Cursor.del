@@ -1,0 +1,79 @@
+import "OnScreenText.del";
+
+globalvar Cursor[] AllCursors = [];
+class Cursor
+{
+    private Player owner;
+    private Vector startFacing;
+    private Number offsetX = 0;
+    private Number offsetY = 0;
+    private Number xMin; private Number xMax;
+    private Number yMin; private Number yMax;
+    //public static Cursor[] AllCursors = [];
+    public CursorInput(in Number XMin = -2.5,  in Number XMax = 2.5, 
+                       in Number YMin = -1.25, in Number YMax = 1.25,
+                       in Player Owner = EventPlayer()) {
+        owner = Owner;
+        startFacing  = FacingDirectionOf(Owner);
+        prepPlayer(Owner);
+        
+        xMin = XMin; xMax = XMax;
+        yMin = YMin; yMax = YMax;
+
+        root.AllCursors += this;
+    }
+
+    private static void prepPlayer(in Player player) {
+        SetAimSpeed(player, 15);
+        SetPrimaryFireEnabled(player, false);
+        SetSecondaryFireEnabled(player, false);
+    }
+
+    private static void unPrepPlayer(in Player player) {
+        SetAimSpeed(player, 100);
+        SetPrimaryFireEnabled(player, true);
+        SetSecondaryFireEnabled(player, true);
+    }
+
+    private Number getAbsX():
+        AngleDifference(
+            HorizontalAngleFromDirection(FacingDirectionOf(owner)), 
+            HorizontalAngleFromDirection(startFacing)
+        );
+    
+    private Number getAbsY():
+        AngleDifference(
+            VerticalAngleFromDirection(FacingDirectionOf(owner)), 
+            VerticalAngleFromDirection(startFacing)
+        );
+    
+    private Number getRawX(): getAbsX() + offsetX;
+    private Number getRawY(): getAbsY() + offsetY;
+    public Number getX(): Math.Clamp(getRawX(), xMin, xMax);
+    public Number getY(): Math.Clamp(getRawY(), yMin, yMax);
+    public Boolean isOutOfBounds(): 
+        !Math.IsInRange(getRawX(), xMin, xMax) || 
+        !Math.IsInRange(getRawY(), yMin, yMax);
+
+    public void updateOffset()
+    {
+        offsetX -= getRawX() - getX();
+        offsetY -= getRawY() - getY();
+    }
+
+    public void close()
+    {
+        unPrepPlayer(owner);
+        delete this;
+    }
+}
+
+rule: "[Cursor.del] Cursor bounds"
+Event.OngoingGlobal
+if(/*Cursor.*/AllCursors != [])
+if(IsTrueForAny(/*Cursor.*/AllCursors, <Cursor>ArrayElement()~isOutOfBounds()))
+{
+    Cursor[] cursorsToUpdate = FilteredArray(/*Cursor.*/AllCursors, <Cursor>ArrayElement()~isOutOfBounds());
+    foreach(Cursor c in cursorsToUpdate)
+        c.updateOffset();
+}
