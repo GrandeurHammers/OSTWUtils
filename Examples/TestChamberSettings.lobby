@@ -1,21 +1,5 @@
 {
   "Modes": {
-    "Assault": {
-      "Limit Roles": "2 Of Each Role Per Team",
-      "Enabled": false
-    },
-    "Control": {
-      "Limit Roles": "2 Of Each Role Per Team",
-      "Enabled": false
-    },
-    "Escort": {
-      "Limit Roles": "2 Of Each Role Per Team",
-      "Enabled": false
-    },
-    "Hybrid": {
-      "Limit Roles": "2 Of Each Role Per Team",
-      "Enabled": false
-    },
     "Skirmish": {
       "Enabled Maps": [
         "Workshop Chamber"
@@ -30,9 +14,5 @@
         "Ability Cooldown Time": 10
       }
     }
-  },
-  "Extensions": {
-    "Energy Explosion Effects": true,
-    "Explosion Sounds": true
   }
 }
