@@ -16,7 +16,7 @@ recursive Number stringCompare(String str1!, String str2!)
     return stringCompare(StringSlice(str1, 1, CountOf(str1)-1), StringSlice(str2, 1, CountOf(str2)-1));
 }
 
-Any[] sortAlphabetically(Any[] arrayToSort!) "[StringSorting.del] Sort array alphabetically"
+Any[] sortAlphabetically(Any[] arrayToSort!) "[StringSorting.del] (Subroutine) Sort array alphabetically"
 {
     Any[] output! = [];
     while(CountOf(arrayToSort) > 1)
