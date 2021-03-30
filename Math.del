@@ -19,8 +19,10 @@ class Math {
                                                   Number time):
         startPosition + startVelocity * time + 0.5 * acceleration * time * time;
 
+    public static Number MagnitudeOfInDirection(Vector vector, Vector direction):
+        DotProduct(vector, Normalize(direction));
     public static Vector VectorProjection(Vector toProject, Vector onto):
-        Normalize(onto) * DotProduct(toProject, Normalize(onto));
+        Normalize(onto) * MagnitudeOfInDirection(toProject, onto);
     public static Vector VectorRejection(Vector toReject, Vector onto):
         toReject - VectorProjection(toReject, onto);
     public static Vector VectorReflection(Vector initial, Vector normal):
@@ -58,4 +60,42 @@ class Math {
         WorldVectorForPositionWithPitch(localVector, EyePosition(relativePlayer),
             FacingDirectionOf(relativePlayer), transformationIncludesTranslation);
 
+    public static Vector LocalVectorForPositionWithPitch(
+        Vector worldVector = Vector(0,0,0),
+        Vector relativePosition = Vector(0,0,0),
+        Vector relativeFacing = Forward(),
+        Boolean transformationIncludesTranslation = false
+    ):
+        Vector(
+            MagnitudeOfInDirection(
+                <Number>transformationIncludesTranslation * relativePosition - worldVector, 
+                XAxisFromZAxis(relativeFacing)
+            ),
+            MagnitudeOfInDirection(
+                worldVector - <Number>transformationIncludesTranslation * relativePosition, 
+                YAxisFromZAxis(relativeFacing)
+            ),
+            MagnitudeOfInDirection(
+                worldVector - <Number>transformationIncludesTranslation * relativePosition, 
+                relativeFacing
+            )
+        );
+    
+    public static Vector LocalVectorForPlayerWithPitch(
+        Vector localVector = Vector(0,0,0),
+        Player relativePlayer = EventPlayer(),
+        Boolean transformationIncludesTranslation = false
+    ):
+        LocalVectorForPositionWithPitch(localVector, EyePosition(relativePlayer),
+            FacingDirectionOf(relativePlayer), transformationIncludesTranslation);
+    
+    public static Vector LocalVectorForPosition(
+        Vector localVector = Vector(0,0,0),
+        Vector relativePosition = Vector(0,0,0),
+        Vector relativeFacing = Forward(),
+        Boolean transformationIncludesTranslation = false
+    ):
+        LocalVectorForPositionWithPitch(localVector, relativePosition, 
+            DirectionFromAngles(HorizontalAngleFromDirection(relativeFacing), 0), 
+            transformationIncludesTranslation);
 }
