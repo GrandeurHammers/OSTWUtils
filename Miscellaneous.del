@@ -76,7 +76,8 @@ void DoCameraTransition(in Player | Player[] player = EventPlayer(),
     );
 }
 
-Number TimeDelta(): TotalTimeElapsed() - EvaluateOnce(TotalTimeElapsed());
+Number TimeSince(Number timestamp): TotalTimeElapsed() - timestamp;
+Number TimeDelta(): TimeSince(EvaluateOnce(TotalTimeElapsed()));
 
 void StunWithoutEffects(Player | Player[] Player = EventPlayer(), Player Assister = null, Number Duration = 0)
 {
@@ -123,3 +124,10 @@ void AllowAllButtons(Player | Player[] Player = EventPlayer())
     AllowButton(Player, Button.Reload);
     AllowButton(Player, Button.Crouch);
 }
+
+Boolean RayCastHit(
+    Vector StartPos, Vector EndPos, Player | Player[] PlayersToInclude = null, 
+    Player | Player[] PlayersToExclude = null, Boolean IncludePlayerOwnedObjects = false
+): 
+    RayCastHitPosition(StartPos, EndPos, PlayersToInclude, PlayersToExclude, IncludePlayerOwnedObjects) 
+    != EndPos;
