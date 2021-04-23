@@ -1,6 +1,8 @@
 import "OnScreenText.del";
 
 globalvar Cursor[] AllCursors = [];
+
+Number BASE_AIM_SPEED: 15;
 class Cursor
 {
     private Player owner;
@@ -9,6 +11,7 @@ class Cursor
     private Number offsetY = 0;
     private Number xMin; private Number xMax;
     private Number yMin; private Number yMax;
+    private Number aimSpeed;
     //public static Cursor[] AllCursors = [];
     public CursorInput(in Number XMin = -2.5,  in Number XMax = 2.5, 
                        in Number YMin = -1.25, in Number YMax = 1.25,
@@ -23,13 +26,14 @@ class Cursor
         root.AllCursors += this;
     }
 
-    private static void prepPlayer(in Player player) {
-        SetAimSpeed(player, 15);
+    private void prepPlayer(in Player player) {
+        aimSpeed = root.BASE_AIM_SPEED;
+        SetAimSpeed(player, aimSpeed);
         SetPrimaryFireEnabled(player, false);
         SetSecondaryFireEnabled(player, false);
     }
 
-    private static void unPrepPlayer(in Player player) {
+    private void unPrepPlayer(in Player player) {
         SetAimSpeed(player, 100);
         SetPrimaryFireEnabled(player, true);
         SetSecondaryFireEnabled(player, true);
@@ -47,8 +51,8 @@ class Cursor
             VerticalAngleFromDirection(startFacing)
         );
     
-    private Number getRawX(): getAbsX() + offsetX;
-    private Number getRawY(): getAbsY() + offsetY;
+    private Number getRawX(): aimSpeed / root.BASE_AIM_SPEED * (getAbsX() + offsetX);
+    private Number getRawY(): aimSpeed / root.BASE_AIM_SPEED * (getAbsY() + offsetY);
     public Number getX(): Math.Clamp(getRawX(), xMin, xMax);
     public Number getY(): Math.Clamp(getRawY(), yMin, yMax);
     public Boolean isOutOfBounds(): 
@@ -65,6 +69,21 @@ class Cursor
     {
         unPrepPlayer(owner);
         delete this;
+    }
+
+    public void updateAimSpeed(Number newSpeed)
+    {
+        newSpeed = Math.Clamp(newSpeed, 2, 50);
+        if (newSpeed == aimSpeed) return;
+        # Update offset to avoid cursor moving
+        offsetX += (aimSpeed*(getAbsX() + offsetX) - newSpeed*(getAbsX() + offsetX)) / newSpeed;
+        offsetY += (aimSpeed*(getAbsY() + offsetY) - newSpeed*(getAbsY() + offsetY)) / newSpeed;
+        aimSpeed = newSpeed;
+    }
+
+    public Number getAimSpeed()
+    {
+        return aimSpeed;
     }
 }
 
