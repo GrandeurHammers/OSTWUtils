@@ -5,6 +5,7 @@ globalvar Cursor[] AllCursors = [];
 Number BASE_AIM_SPEED: 15;
 class Cursor
 {
+
     private Player owner;
     private Vector startFacing;
     private Number offsetX = 0;
@@ -13,13 +14,14 @@ class Cursor
     private Number yMin; private Number yMax;
     private Number aimSpeed;
     //public static Cursor[] AllCursors = [];
-    public CursorInput(in Number XMin = -2.5,  in Number XMax = 2.5, 
+    //Cursor's Constructor
+    public constructor(in Number XMin = -2.5,  in Number XMax = 2.5,
                        in Number YMin = -1.25, in Number YMax = 1.25,
                        in Player Owner = EventPlayer()) {
         owner = Owner;
         startFacing  = FacingDirectionOf(Owner);
         prepPlayer(Owner);
-        
+
         xMin = XMin; xMax = XMax;
         yMin = YMin; yMax = YMax;
 
@@ -41,22 +43,22 @@ class Cursor
 
     private Number getAbsX():
         AngleDifference(
-            HorizontalAngleFromDirection(FacingDirectionOf(owner)), 
+            HorizontalAngleFromDirection(FacingDirectionOf(owner)),
             HorizontalAngleFromDirection(startFacing)
         );
-    
+
     private Number getAbsY():
         AngleDifference(
-            VerticalAngleFromDirection(FacingDirectionOf(owner)), 
+            VerticalAngleFromDirection(FacingDirectionOf(owner)),
             VerticalAngleFromDirection(startFacing)
         );
-    
+
     private Number getRawX(): aimSpeed / root.BASE_AIM_SPEED * (getAbsX() + offsetX);
     private Number getRawY(): aimSpeed / root.BASE_AIM_SPEED * (getAbsY() + offsetY);
     public Number getX(): Math.Clamp(getRawX(), xMin, xMax);
     public Number getY(): Math.Clamp(getRawY(), yMin, yMax);
-    public Boolean isOutOfBounds(): 
-        !Math.IsInRange(getRawX(), xMin, xMax) || 
+    public Boolean isOutOfBounds():
+        !Math.IsInRange(getRawX(), xMin, xMax) ||
         !Math.IsInRange(getRawY(), yMin, yMax);
 
     public void updateOffset()

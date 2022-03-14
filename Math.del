@@ -13,9 +13,9 @@ class Math {
     public static Number Quotient(Number n, Number d): Floor(n/d);
     public static Number Clamp(Number n, Number min, Number max): Max(min, Min(n, max));
     public static Number IsInRange(Number n, Number min, Number max): n >= min && n <= max;
-    public static Number | Vector KinematicMotion(Number | Vector startPosition, 
-                                                  Number | Vector startVelocity, 
-                                                  Number | Vector acceleration, 
+    public static Number | Vector KinematicMotion(Number | Vector startPosition,
+                                                  Number | Vector startVelocity,
+                                                  Number | Vector acceleration,
                                                   Number time):
         startPosition + startVelocity * time + 0.5 * acceleration * time * time;
 
@@ -37,8 +37,8 @@ class Math {
         Vector relativeFacing = Forward(),
         Boolean transformationIncludesTranslation = false
     ):
-        WorldVectorForPositionWithPitch(localVector, relativePosition, 
-            DirectionFromAngles(HorizontalAngleFromDirection(relativeFacing), 0), 
+        WorldVectorForPositionWithPitch(localVector, relativePosition,
+            DirectionFromAngles(HorizontalAngleFromDirection(relativeFacing), 0),
             transformationIncludesTranslation);
 
     public static Vector WorldVectorForPositionWithPitch(
@@ -68,19 +68,19 @@ class Math {
     ):
         Vector(
             MagnitudeOfInDirection(
-                <Number>transformationIncludesTranslation * relativePosition - worldVector, 
+                <Number>transformationIncludesTranslation * relativePosition - worldVector,
                 XAxisFromZAxis(relativeFacing)
             ),
             MagnitudeOfInDirection(
-                worldVector - <Number>transformationIncludesTranslation * relativePosition, 
+                worldVector - <Number>transformationIncludesTranslation * relativePosition,
                 YAxisFromZAxis(relativeFacing)
             ),
             MagnitudeOfInDirection(
-                worldVector - <Number>transformationIncludesTranslation * relativePosition, 
+                worldVector - <Number>transformationIncludesTranslation * relativePosition,
                 relativeFacing
             )
         );
-    
+
     public static Vector LocalVectorForPlayerWithPitch(
         Vector localVector = Vector(0,0,0),
         Player relativePlayer = EventPlayer(),
@@ -88,14 +88,14 @@ class Math {
     ):
         LocalVectorForPositionWithPitch(localVector, EyePosition(relativePlayer),
             FacingDirectionOf(relativePlayer), transformationIncludesTranslation);
-    
+
     public static Vector LocalVectorForPosition(
         Vector localVector = Vector(0,0,0),
         Vector relativePosition = Vector(0,0,0),
         Vector relativeFacing = Forward(),
         Boolean transformationIncludesTranslation = false
     ):
-        LocalVectorForPositionWithPitch(localVector, relativePosition, 
-            DirectionFromAngles(HorizontalAngleFromDirection(relativeFacing), 0), 
+        LocalVectorForPositionWithPitch(localVector, relativePosition,
+            DirectionFromAngles(HorizontalAngleFromDirection(relativeFacing), 0),
             transformationIncludesTranslation);
 }
