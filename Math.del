@@ -47,9 +47,9 @@ class Math {
         Vector relativeFacing = Forward(),
         Boolean transformationIncludesTranslation = false
     ):
-        transformationIncludesTranslation * relativePosition 
+        <Number>transformationIncludesTranslation * relativePosition
             + XOf(localVector) * XAxisFromZAxis(relativeFacing)
-            + YOf(localVector) * YAxisFromZAxis(relativeFacing) 
+            + YOf(localVector) * YAxisFromZAxis(relativeFacing)
             + ZOf(localVector) * relativeFacing;
 
     public static Vector WorldVectorForPlayerWithPitch(
