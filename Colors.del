@@ -29,11 +29,11 @@ class Colors {
             LinearInterpolate(color1.Blue,  color2.Blue,  fraction),
             LinearInterpolate(color1.Alpha, color2.Alpha, fraction)
         );
-    
+
     public static Color StepGradient(Color[] colors, Number fraction):
         colors[Math.Floor(Math.Clamp(fraction, 0, 1) * 0.999 * CountOf(colors))];
 
-    public static Color[] AllColors: 
+    public static Color[] AllColors:
         [Color.White, Color.Yellow, Color.Green, Color.Purple, Color.Red,
          Color.Blue, Color.Aqua, Color.Orange, Color.SkyBlue, Color.Turquoise,
          Color.LimeGreen, Color.Gray, Color.Violet, Color.Rose, Color.Black];
@@ -41,11 +41,11 @@ class Colors {
         ["White", "Yellow", "Green", "Purple", "Red",
          "Blue", "Aqua", "Orange", "SkyBlue", "Turquoise",
          "LimeGreen", "Gray", "Violet", "Rose", "Black"];
-    public static Number[][] AllColorComponents: 
-        [[255, 255, 255, 255], [255, 255,   0, 255], [ 69, 255,  87, 255], 
-         [161,  73, 197, 255], [200,   0,  19, 255], [ 39, 170, 255, 255], 
-         [  0, 234, 234, 255], [236, 153,   0, 255], [108, 190, 244, 255], 
-         [  0, 230, 151, 255], [160, 232,  27, 255], [127, 127, 127, 255], 
+    public static Number[][] AllColorComponents:
+        [[255, 255, 255, 255], [255, 255,   0, 255], [ 69, 255,  87, 255],
+         [161,  73, 197, 255], [200,   0,  19, 255], [ 39, 170, 255, 255],
+         [  0, 234, 234, 255], [236, 153,   0, 255], [108, 190, 244, 255],
+         [  0, 230, 151, 255], [160, 232,  27, 255], [127, 127, 127, 255],
          [100,  50, 255, 255], [255,  50, 145, 255], [  0,   0,   0, 255]];
     public static Color Hidden: CustomColor(alpha: 0);
 }
@@ -62,7 +62,7 @@ class TeamBasedColor {
 
     public Color Display(Player owner=EventPlayer(), Player viewer=LocalPlayer()):
         (owner==viewer || TeamOf(owner) == TeamOf(viewer)) ? friendly : enemy;
-    
+
     public void SetEnemy(Color newEnemyColor = Color.Red) {
         if (newEnemyColor != Color.Team1 && newEnemyColor != Color.Team2) enemy = newEnemyColor;
     }
