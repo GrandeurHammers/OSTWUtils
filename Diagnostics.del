@@ -25,7 +25,7 @@ class Diagnostics
 
     private Any[] huds;
 
-    public Diagnostics(Boolean VisibleToHostOnly!       = false,
+    public constructor(Boolean VisibleToHostOnly!       = false,
                        Boolean ShowServerLoad!          = false,
                        Boolean ShowServerLoadAverage!   = false,
                        Boolean ShowServerLoadPeak!      = false,
@@ -48,43 +48,43 @@ class Diagnostics
             Spectators:     Spectators.VisibleAlways
         );
 
-        if(ShowServerLoad) huds += CreateReadout(
+        if(ShowServerLoad) huds += Diagnostics.CreateReadout(
             Text:           <"[ <0> ]  Server Load", ServerLoad()>,
             Color:          Colors.StepGradient(gradientColors, ServerLoad()/255),
             HostVisibility: VisibleToHostOnly
         );
 
-        if(ShowServerLoadAverage) huds += CreateReadout(
+        if(ShowServerLoadAverage) huds += Diagnostics.CreateReadout(
             Text:           <"[ <0> ]  Server Load Average", ServerLoadAverage()>,
             Color:          Colors.StepGradient(gradientColors, ServerLoadAverage()/255),
             HostVisibility: VisibleToHostOnly
         );
 
-        if(ShowServerLoadPeak) huds += CreateReadout(
+        if(ShowServerLoadPeak) huds += Diagnostics.CreateReadout(
             Text:           <"[ <0> ]  Server Load Peak", ServerLoadPeak()>,
             Color:          Colors.StepGradient(gradientColors, ServerLoadPeak()/255),
             HostVisibility: VisibleToHostOnly
         );
 
-        if(ShowEntityCount) huds += CreateReadout(
+        if(ShowEntityCount) huds += Diagnostics.CreateReadout(
             Text:           <"[ <0> / <1> ]  Entity Count", EntityCount(), 128*(1 + EvaluateOnce(PlayMoreEffectsEnabled))>,
             Color:          Colors.StepGradient(gradientColors, EntityCount()/(128*(1 + EvaluateOnce(PlayMoreEffectsEnabled)))),
             HostVisibility: VisibleToHostOnly
         );
 
-        if(ShowTextCount) huds += CreateReadout(
+        if(ShowTextCount) huds += Diagnostics.CreateReadout(
             Text:           <"[ <0> / <1> ]  Text Count", TextCount(), 128>,
             Color:          Colors.StepGradient(gradientColors, TextCount()/128),
             HostVisibility: VisibleToHostOnly
         );
 
-        if(ShowDummyBotCount) huds += CreateReadout(
+        if(ShowDummyBotCount) huds += Diagnostics.CreateReadout(
             Text:           <"[ <0> / <1> ]  Dummy Bot Count", root.DummyBotCount(), 12 * (1 + EvaluateOnce(MoreDummyBotsEnabled)) - root.HumanAndAICount()>,
             Color:          Colors.StepGradient(gradientColors, root.DummyBotCount()/(12 * (1 + EvaluateOnce(MoreDummyBotsEnabled)) - root.HumanAndAICount())),
             HostVisibility: VisibleToHostOnly
         );
-        
-        if(ShowClassMemory) huds += CreateReadout(
+
+        if(ShowClassMemory) huds += Diagnostics.CreateReadout(
             Text:           <"[ <0>% ]  Class Memory", ClassMemory()>,
             Color:          Colors.StepGradient(gradientColors, ClassMemory()/100),
             HostVisibility: VisibleToHostOnly
