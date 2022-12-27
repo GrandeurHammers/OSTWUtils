@@ -5,13 +5,13 @@ class ComponentColor {
     public Number Green;
     public Number Blue;
     public Number Alpha;
-    public ComponentColor(Number red=255, Number green=255, Number blue=255, Number alpha=255) {
+    public constructor(Number red=255, Number green=255, Number blue=255, Number alpha=255) {
         this.Red    = red;
         this.Green  = green;
         this.Blue   = blue;
         this.Alpha  = alpha;
     }
-    public ComponentColor(Color c) {
+    public constructor(Color c) {
         Number cIndex = IndexOfArrayValue(Colors.AllColors, c);
         this.Red    = Colors.AllColorComponents[cIndex][0];
         this.Green  = Colors.AllColorComponents[cIndex][1];
@@ -54,7 +54,7 @@ class TeamBasedColor {
     private Color enemy;
     private Color friendly;
 
-    public TeamBasedColor(Color _enemy = Color.Red, Color _friendly = Color.Blue)
+    public constructor(Color _enemy = Color.Red, Color _friendly = Color.Blue)
     {
         enemy    = _enemy;
         friendly = _friendly;
