@@ -3,15 +3,15 @@ String toString(Any x): <"<0>", x>;
 Number charToInt(String c): StringContains(alphabet, c) ? IndexOfStringChar(alphabet, c) : StringLength(alphabet);
 recursive Number stringCompare(String str1!, String str2!)
 {
-    if (str1 == str2) 
+    if (str1 == str2)
         return 0;
-    else if (StringLength(str1) == 0) 
+    else if (StringLength(str1) == 0)
         return -1;
-    else if (StringLength(str2) == 0) 
+    else if (StringLength(str2) == 0)
         return 1;
-    else if (charToInt(CharInString(str1, 0)) > charToInt(CharInString(str2, 0))) 
+    else if (charToInt(CharInString(str1, 0)) > charToInt(CharInString(str2, 0)))
         return 1;
-    else if (charToInt(CharInString(str1, 0)) < charToInt(CharInString(str2, 0))) 
+    else if (charToInt(CharInString(str1, 0)) < charToInt(CharInString(str2, 0)))
         return -1;
     return stringCompare(StringSlice(str1, 1, CountOf(str1)-1), StringSlice(str2, 1, CountOf(str2)-1));
 }

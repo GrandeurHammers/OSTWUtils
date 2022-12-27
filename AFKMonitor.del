@@ -1,7 +1,7 @@
 import "Diagnostics.del";
 
 globalvar Diagnostics disp = new Diagnostics(
-    ShowServerLoadAverage:  true, 
+    ShowServerLoadAverage:  true,
     ShowServerLoadPeak:     true
 );
 
@@ -35,7 +35,7 @@ if(HasSpawned())
 rule: "[AFKMonitor.del] Main loop (5Hz)"
 if(monitorEnabled)
 {
-    while(true) 
+    while(true)
     {
         foreach(Player p in AllPlayers())
         {
