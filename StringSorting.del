@@ -1,0 +1,40 @@
+String alphabet: " 0123456789AaBbCcDdEeFfGgHhIiJjKkLlMmNnOoÖöPpQqRrSsTtUuÚúVvWwXxYyZz";
+String toString(Any x): <"<0>", x>;
+Number charToInt(String c): StringContains(alphabet, c) ? IndexOfStringChar(alphabet, c) : StringLength(alphabet);
+recursive Number stringCompare(String str1!, String str2!)
+{
+    if (str1 == str2)
+        return 0;
+    else if (StringLength(str1) == 0)
+        return -1;
+    else if (StringLength(str2) == 0)
+        return 1;
+    else if (charToInt(CharInString(str1, 0)) > charToInt(CharInString(str2, 0)))
+        return 1;
+    else if (charToInt(CharInString(str1, 0)) < charToInt(CharInString(str2, 0)))
+        return -1;
+    return stringCompare(StringSlice(str1, 1, CountOf(str1)-1), StringSlice(str2, 1, CountOf(str2)-1));
+}
+
+Any[] sortAlphabetically(Any[] arrayToSort!) "[StringSorting.del] (Subroutine) Sort array alphabetically"
+{
+    Any[] output! = [];
+    while(CountOf(arrayToSort) > 1)
+    {
+        Any lowestVal! = arrayToSort[0];
+        arrayToSort.ModRemoveByIndex(0);
+        for (Number i! = 0; i < CountOf(arrayToSort); i++)
+        {
+            if (stringCompare(toString(arrayToSort[i]), toString(lowestVal)) == -1)
+            {
+                Any tempVal! = lowestVal;
+                lowestVal = arrayToSort[i];
+                arrayToSort[i] = tempVal;
+            }
+        }
+        output += lowestVal;
+        MinWait();
+    }
+    output += arrayToSort;
+    return output;
+}

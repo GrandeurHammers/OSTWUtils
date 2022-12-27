@@ -1,15 +1,17 @@
+import "Math.del";
+
 class ComponentColor {
     public Number Red;
     public Number Green;
     public Number Blue;
     public Number Alpha;
-    public ComponentColor(Number red=255, Number green=255, Number blue=255, Number alpha=255) {
+    public constructor(Number red=255, Number green=255, Number blue=255, Number alpha=255) {
         this.Red    = red;
         this.Green  = green;
         this.Blue   = blue;
         this.Alpha  = alpha;
     }
-    public ComponentColor(Color c) {
+    public constructor(Color c) {
         Number cIndex = IndexOfArrayValue(Colors.AllColors, c);
         this.Red    = Colors.AllColorComponents[cIndex][0];
         this.Green  = Colors.AllColorComponents[cIndex][1];
@@ -20,7 +22,7 @@ class ComponentColor {
 }
 
 class Colors {
-    public static Color Gradient(ComponentColor color1, ComponentColor color2, Number fraction):
+    public static Color LinearGradient(ComponentColor color1, ComponentColor color2, Number fraction):
         CustomColor(
             LinearInterpolate(color1.Red,   color2.Red,   fraction),
             LinearInterpolate(color1.Green, color2.Green, fraction),
@@ -28,7 +30,10 @@ class Colors {
             LinearInterpolate(color1.Alpha, color2.Alpha, fraction)
         );
 
-    public static Color[] AllColors: 
+    public static Color StepGradient(Color[] colors, Number fraction):
+        colors[Math.Floor(Math.Clamp(fraction, 0, 1) * 0.999 * CountOf(colors))];
+
+    public static Color[] AllColors:
         [Color.White, Color.Yellow, Color.Green, Color.Purple, Color.Red,
          Color.Blue, Color.Aqua, Color.Orange, Color.SkyBlue, Color.Turquoise,
          Color.LimeGreen, Color.Gray, Color.Violet, Color.Rose, Color.Black];
@@ -36,11 +41,11 @@ class Colors {
         ["White", "Yellow", "Green", "Purple", "Red",
          "Blue", "Aqua", "Orange", "SkyBlue", "Turquoise",
          "LimeGreen", "Gray", "Violet", "Rose", "Black"];
-    public static Number[][] AllColorComponents: 
-        [[255, 255, 255, 255], [255, 255,   0, 255], [ 69, 255,  87, 255], 
-         [161,  73, 197, 255], [200,   0,  19, 255], [ 39, 170, 255, 255], 
-         [  0, 234, 234, 255], [236, 153,   0, 255], [108, 190, 244, 255], 
-         [  0, 230, 151, 255], [160, 232,  27, 255], [127, 127, 127, 255], 
+    public static Number[][] AllColorComponents:
+        [[255, 255, 255, 255], [255, 255,   0, 255], [ 69, 255,  87, 255],
+         [161,  73, 197, 255], [200,   0,  19, 255], [ 39, 170, 255, 255],
+         [  0, 234, 234, 255], [236, 153,   0, 255], [108, 190, 244, 255],
+         [  0, 230, 151, 255], [160, 232,  27, 255], [127, 127, 127, 255],
          [100,  50, 255, 255], [255,  50, 145, 255], [  0,   0,   0, 255]];
     public static Color Hidden: CustomColor(alpha: 0);
 }
@@ -49,15 +54,15 @@ class TeamBasedColor {
     private Color enemy;
     private Color friendly;
 
-    public TeamBasedColor(Color _enemy = Color.Red, Color _friendly = Color.Blue)
+    public constructor(Color _enemy = Color.Red, Color _friendly = Color.Blue)
     {
         enemy    = _enemy;
         friendly = _friendly;
     }
 
-    public Color Display(Player owner=EventPlayer(), Player viewer=EventPlayer()):
+    public Color Display(Player owner=EventPlayer(), Player viewer=LocalPlayer()):
         (owner==viewer || TeamOf(owner) == TeamOf(viewer)) ? friendly : enemy;
-    
+
     public void SetEnemy(Color newEnemyColor = Color.Red) {
         if (newEnemyColor != Color.Team1 && newEnemyColor != Color.Team2) enemy = newEnemyColor;
     }

@@ -1,12 +1,10 @@
+import "Math.del";
+
 class OnScreenText {
     public static Vector WorldRender(Vector eyePos, Vector facingDir, Number screenX, Number screenY):
-        eyePos + 100 *(screenX*xAxis(facingDir) + (screenY-0.2)*yAxis(facingDir) + 3*facingDir);
+        Math.WorldVectorForPositionWithPitch(Vector(100 * screenX, 100 * (screenY - 0.2), 300), eyePos, facingDir, true);
     public static Vector PlayerRender(Player player, Number screenX, Number screenY):
-        WorldRender(EyePosition(player), FacingDirectionOf(player), screenX, screenY);
-    
-    private static Vector yAxis(Vector zAxis):
-        DirectionFromAngles(HorizontalAngleFromDirection(zAxis), VerticalAngleFromDirection(zAxis) - 90);
-    private static Vector xAxis(Vector zAxis): CrossProduct(zAxis, yAxis(zAxis));
+        Math.WorldVectorForPlayerWithPitch(Vector(100 * screenX, 100 * (screenY - 0.2), 300), player, true);
 
     public static Any CreateOnScreenText(
         Player | Player[] VisibleTo = EventPlayer(),

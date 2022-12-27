@@ -1,6 +1,6 @@
 import "Math.del";
 
-class EasingFunctions {
+class Ease {
     private static Number c1: 1.70158;
     private static Number c2: c1 * 1.525;
     private static Number c3: c1 + 1;
@@ -12,108 +12,124 @@ class EasingFunctions {
     private static Number pow3(Number n): n * n * n;
     private static Number pow4(Number n): n * n * n * n;
     private static Number pow5(Number n): n * n * n * n * n;
-    
-    public static Number EaseInSine(Number frac): 1 - CosineFromRadians(frac*Math.PI/2);
 
-    public static Number EaseOutSine(Number frac): SineFromRadians(frac*Math.PI/2);
+    public static (Number) => Number InSine = (Number frac)
+        => 1 - CosineFromRadians(frac*Math.PI/2);
+    public static (Number) => Number OutSine = (Number frac)
+        => SineFromRadians(frac*Math.PI/2);
 
-    public static Number EaseInOutSine(Number frac): -1*(CosineFromRadians(Math.PI*frac) - 1) / 2;
+    public static (Number) => Number InOutSine = (Number frac)
+        => -1*(CosineFromRadians(Math.PI*frac) - 1) / 2;
 
-    public static Number EaseInQuad(Number frac): pow2(frac);
+    public static (Number) => Number InQuad = (Number frac)
+        => pow2(frac);
 
-    public static Number EaseOutQuad(Number frac): 1 - pow2(1 - frac);
-    
-    public static Number EaseInOutQuad(Number frac):
-        frac < 0.5 
+    public static (Number) => Number OutQuad = (Number frac)
+        => 1 - pow2(1 - frac);
+
+    public static (Number) => Number InOutQuad = (Number frac)
+        => frac < 0.5
             ? 2 * pow2(frac)
             : 1 - pow2(-2 * frac + 2) / 2;
 
-    public static Number EaseInCubic(Number frac): pow3(frac);
-    public static Number EaseOutCubic(Number frac): 1 - pow3(1 - frac);
-    
-    public static Number EaseInOutCubic(Number frac):
-        frac < 0.5 
-            ? 4 * pow3(frac) 
+    public static (Number) => Number InCubic = (Number frac)
+        => pow3(frac);
+    public static (Number) => Number OutCubic = (Number frac)
+        => 1 - pow3(1 - frac);
+
+    public static (Number) => Number InOutCubic = (Number frac)
+        => frac < 0.5
+            ? 4 * pow3(frac)
             : 1 - pow3(-2 * frac + 2) / 2;
 
-    public static Number EaseInQuart(Number frac): pow4(frac);
-    
-    public static Number EaseOutQuart(Number frac): 1 - pow4(1 - frac);
-    
-    public static Number EaseInOutQuart(Number frac):
-        frac < 0.5 
-        ? 8 * pow4(frac)
-        : 1 - pow4(-2 * frac + 2) / 2;
-    
-    public static Number EaseInQuint(Number frac): pow5(frac);
-    
-    public static Number EaseOutQuint(Number frac): 1 - pow5(1 - frac);
-    
-    public static Number EaseInOutQuint(Number frac):
-        frac < 0.5 
+    public static (Number) => Number InQuart = (Number frac)
+        => pow4(frac);
+
+    public static (Number) => Number OutQuart = (Number frac)
+        => 1 - pow4(1 - frac);
+
+    public static (Number) => Number InOutQuart = (Number frac)
+        => frac < 0.5
+            ? 8 * pow4(frac)
+            : 1 - pow4(-2 * frac + 2) / 2;
+
+    public static (Number) => Number InQuint = (Number frac)
+        => pow5(frac);
+
+    public static (Number) => Number OutQuint = (Number frac)
+        => 1 - pow5(1 - frac);
+
+    public static (Number) => Number InOutQuint = (Number frac)
+        => frac < 0.5
             ? 16 * pow5(frac)
             : 1 - pow5(-2 * frac + 2) / 2;
-    
-    public static Number EaseInExpo(Number frac): frac == 0 ? 0 : 2^(10 * frac - 10);
-    
-    public static Number EaseOutExpo(Number frac): frac == 1 ? 1 : 1 - 2^(-10 * frac);
-    
-    public static Number EaseInOutExpo(Number frac):
-        frac == 0 ? 0 
-        : frac == 1 ? 1 
-        : frac < 0.5 ? 
-            2^(20 * frac - 10) / 2 
+
+    public static (Number) => Number InExpo = (Number frac)
+        => frac == 0 ? 0 : 2^(10 * frac - 10);
+
+    public static (Number) => Number OutExpo = (Number frac)
+        => frac == 1 ? 1 : 1 - 2^(-10 * frac);
+
+    public static (Number) => Number InOutExpo = (Number frac)
+        => frac ==  0 ? 0
+         : frac ==  1 ? 1
+         : frac < 0.5 ?
+            2^(20 * frac - 10) / 2
             : (2 - 2^(-20 * frac + 10)) / 2;
-    
-    public static Number EaseInCirc(Number frac): 1 - SquareRoot(1 - pow2(frac));
-    
-    public static Number EaseOutCirc(Number frac): SquareRoot(1 - pow2(frac - 1));
-    
-    public static Number EaseInOutCirc(Number frac):
-        frac < 0.5
+
+    public static (Number) => Number InCirc = (Number frac)
+        => 1 - SquareRoot(1 - pow2(frac));
+
+    public static (Number) => Number OutCirc = (Number frac)
+        => SquareRoot(1 - pow2(frac - 1));
+
+    public static (Number) => Number InOutCirc = (Number frac)
+        => frac < 0.5
             ? (1 - SquareRoot(1 - pow2(2 * frac))) / 2
             : (SquareRoot(1 - pow2(-2 * frac + 2)) + 1) / 2;
 
-    public static Number EaseInBack(Number frac): c3 * pow3(frac) - c1 * pow2(frac);
-    
-    public static Number EaseOutBack(Number frac): 1 + c3 * pow3(frac - 1) + c1 * pow2(frac - 1);
-    
-    public static Number EaseInOutBack(Number frac):
-        frac < 0.5
+    public static (Number) => Number InBack = (Number frac)
+        => c3 * pow3(frac) - c1 * pow2(frac);
+
+    public static (Number) => Number OutBack = (Number frac)
+        => 1 + c3 * pow3(frac - 1) + c1 * pow2(frac - 1);
+
+    public static (Number) => Number InOutBack = (Number frac)
+        => frac < 0.5
             ? (pow2(2 * frac) * ((c2 + 1) * 2 * frac - c2)) / 2
             : (pow2(2 * frac - 2) * ((c2 + 1) * (frac * 2 - 2) + c2) + 2) / 2;
-    
-    public static Number EaseInElastic(Number frac):
-        frac == 0 ? 0 
-        : frac == 1 ? 1
-        : -(2^(10 * frac - 10)) * SineFromRadians((frac * 10 - 10.75) * c4);
-    
-    public static Number EaseOutElastic(Number frac):
-        frac == 0 ? 0 
-        : frac == 1 ? 1
-        : 2^(-10 * frac) * SineFromRadians((frac * 10 - 0.75) * c4) + 1;
-    
-    public static Number EaseInOutElastic(Number frac):
-        frac == 0 ? 0 
-        : frac == 1 ? 1 
-        : frac < 0.5
-            ? -(2^(20 * frac - 10) * SineFromRadians((20 * frac - 11.125) * c5)) / 2
-            : (2^(-20 * frac + 10) * SineFromRadians((20 * frac - 11.125) * c5)) / 2 + 1;
-    
-    public static Number EaseInBounce(Number frac):
-        1 - EaseOutBounce(1 - frac);
-    
-    public static Number EaseOutBounce(Number frac):
-        frac < 1/d1 ?
+
+    public static (Number) => Number InElastic = (Number frac)
+        => frac == 0 ? 0
+         : frac == 1 ? 1
+         : -(2^(10 * frac - 10)) * SineFromRadians((frac * 10 - 10.75) * c4);
+
+    public static (Number) => Number OutElastic = (Number frac)
+        => frac == 0 ? 0
+         : frac == 1 ? 1
+         : 2^(-10 * frac) * SineFromRadians((frac * 10 - 0.75) * c4) + 1;
+
+    public static (Number) => Number InOutElastic = (Number frac)
+        => frac == 0 ? 0
+         : frac == 1 ? 1
+         : frac < 0.5
+                ? -(2^(20 * frac - 10) * SineFromRadians((20 * frac - 11.125) * c5)) / 2
+                : (2^(-20 * frac + 10) * SineFromRadians((20 * frac - 11.125) * c5)) / 2 + 1;
+
+    public static (Number) => Number InBounce = (Number frac)
+        => 1 - OutBounce(1 - frac);
+
+    public static (Number) => Number OutBounce = (Number frac)
+        => frac < 1/d1 ?
             n1 * pow2(frac)
-        : frac < 2/d1 ?
+         : frac < 2/d1 ?
             n1 * pow2(frac - 1.5/d1) + 0.75
-        : frac < 2.5/d1 ?
+         : frac < 2.5/d1 ?
             n1 * pow2(frac - 2.25/d1) + 0.9375 :
             n1 * pow2(frac - 2.625/d1) + 0.984375;
-    
-    public static Number EaseInOutBounce(Number frac):
-        frac < 0.5
-            ? (1 - EaseOutBounce(1 - 2 * frac)) / 2
-            : (1 + EaseOutBounce(2 * frac - 1)) / 2;
+
+    public static (Number) => Number InOutBounce = (Number frac)
+        => frac < 0.5
+            ? (1 - OutBounce(1 - 2 * frac)) / 2
+            : (1 + OutBounce(2 * frac - 1)) / 2;
 }

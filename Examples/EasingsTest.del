@@ -1,0 +1,66 @@
+import "../EasingFunctions.del";
+import "../Colors.del";
+//import "../ServerLoad.del";
+
+Number input: Max(0, Min(1, TotalTimeElapsed()%4 < 2 ? (2/3) * (TotalTimeElapsed()%4) : ((7/3) - (2/3) * (TotalTimeElapsed()%4))));
+
+Any Display(Number output, Number x, Color c): CreateEffect(
+    VisibleTo:          AllPlayers(),
+    Type:               Effect.Orb,
+    Color:              c,
+    Position:           Vector(x, 2, 20) + output * Vector(0,4,0),
+    Reevaluation:       EffectRev.VisibleToPositionAndRadius
+);
+
+rule: "init 1"
+{
+    CreateBeamEffect(
+        VisibleTo:          AllPlayers(),
+        BeamType:           BeamType.GoodBeam,
+        StartPosition:      Vector( 20, 2 + 4*input, 19.5),
+        EndPosition:        Vector(-20, 2 + 4*input, 19.5),
+        Color:              Color.Black,
+        Reevaluation:       EffectRev.VisibleToPositionAndRadius
+    );
+    
+    Display(Ease.InSine(input), 16, Color.Blue);
+    Display(Ease.OutSine(input), 15, Color.Red);
+    Display(Ease.InOutSine(input), 14, Color.Purple);
+    Display(Ease.InQuad(input), 13, Color.Blue);
+    Display(Ease.OutQuad(input), 12, Color.Red);
+    Display(Ease.InOutQuad(input), 11, Color.Purple);
+    Display(Ease.InCubic(input), 10, Color.Blue);
+    Display(Ease.OutCubic(input), 9, Color.Red);
+    Display(Ease.InOutCubic(input), 8, Color.Purple);
+    Display(Ease.InQuart(input), 7, Color.Blue);
+    Display(Ease.OutQuart(input), 6, Color.Red);
+    Display(Ease.InOutQuart(input), 5, Color.Purple);
+    Display(Ease.InQuint(input), 4, Color.Blue);
+    Display(Ease.OutQuint(input), 3, Color.Red);
+    Display(Ease.InOutQuint(input), 2, Color.Purple);
+    Display(Ease.InExpo(input), 1, Color.Blue);
+    Display(Ease.OutExpo(input), 0, Color.Red);
+}
+rule: "init 2"
+{
+    Display(Ease.InOutExpo(input), -1, Color.Purple);
+    Display(Ease.InCirc(input), -2, Color.Blue);
+    Display(Ease.OutCirc(input), -3, Color.Red);
+    Display(Ease.InOutCirc(input), -4, Color.Purple);
+    Display(Ease.InBack(input), -5, Color.Blue);
+    Display(Ease.OutBack(input), -6, Color.Red);
+    Display(Ease.InOutBack(input), -7, Color.Purple);
+    Display(Ease.InElastic(input), -8, Color.Blue);
+    Display(Ease.OutElastic(input), -9, Color.Red);
+    Display(Ease.InOutElastic(input), -10, Color.Purple);
+    Display(Ease.InBounce(input), -11, Color.Blue);
+    Display(Ease.OutBounce(input), -12, Color.Red);
+    Display(Ease.InOutBounce(input), -13, Color.Purple);
+}
+
+rule: "Move host"
+if(HasSpawned(HostPlayer()))
+{
+    Teleport(HostPlayer(), Vector(12,0,0));
+    SetFacing(HostPlayer(), Forward());
+}

@@ -1,21 +1,101 @@
 class Math {
+    //////////////////////////////////
+    // Constants
+    //////////////////////////////////
     public static Number PI: Pi();
     public static Number E: 2.71828182845904523536;
+
+    //////////////////////////////////
+    // Functions
+    //////////////////////////////////
     public static Number Floor(Number n): RoundToInteger(n, Rounding.Down);
     public static Number Ceiling(Number n): RoundToInteger(n, Rounding.Up);
     public static Number Quotient(Number n, Number d): Floor(n/d);
     public static Number Clamp(Number n, Number min, Number max): Max(min, Min(n, max));
     public static Number IsInRange(Number n, Number min, Number max): n >= min && n <= max;
-    public static Vector KinematicMotion3D(Vector startPos, Vector startVelocity, Vector acceleration, Number time):
-        startPos + startVelocity*time + 0.5*acceleration*time*time;
-    public static Number KinematicMotion1D(Number startPos, Number startVelocity, Number acceleration, Number time):
-        startPos + startVelocity*time + 0.5*acceleration*time*time;
-    
-    public static Vector VectorProjection(Vector toProject, Vector onto):
-        Normalize(onto) * DotProduct(toProject, Normalize(onto));
+    public static Number | Vector KinematicMotion(Number | Vector startPosition,
+                                                  Number | Vector startVelocity,
+                                                  Number | Vector acceleration,
+                                                  Number time):
+        startPosition + startVelocity * time + 0.5 * acceleration * time * time;
 
+    public static Number MagnitudeOfInDirection(Vector vector, Vector direction):
+        DotProduct(vector, Normalize(direction));
+    public static Vector VectorProjection(Vector toProject, Vector onto):
+        Normalize(onto) * MagnitudeOfInDirection(toProject, onto);
     public static Vector VectorRejection(Vector toReject, Vector onto):
         toReject - VectorProjection(toReject, onto);
     public static Vector VectorReflection(Vector initial, Vector normal):
         initial - 2*(DotProduct(initial, Normalize(normal)))*Normalize(normal);
+    private static Vector YAxisFromZAxis(Vector zAxis):
+        DirectionFromAngles(HorizontalAngleFromDirection(zAxis), VerticalAngleFromDirection(zAxis) - 90);
+    private static Vector XAxisFromZAxis(Vector zAxis): CrossProduct(zAxis, YAxisFromZAxis(zAxis));
+
+    public static Vector WorldVectorForPosition(
+        Vector localVector = Vector(0,0,0),
+        Vector relativePosition = Vector(0,0,0),
+        Vector relativeFacing = Forward(),
+        Boolean transformationIncludesTranslation = false
+    ):
+        WorldVectorForPositionWithPitch(localVector, relativePosition,
+            DirectionFromAngles(HorizontalAngleFromDirection(relativeFacing), 0),
+            transformationIncludesTranslation);
+
+    public static Vector WorldVectorForPositionWithPitch(
+        Vector localVector = Vector(0,0,0),
+        Vector relativePosition = Vector(0,0,0),
+        Vector relativeFacing = Forward(),
+        Boolean transformationIncludesTranslation = false
+    ):
+        <Number>transformationIncludesTranslation * relativePosition
+            + XOf(localVector) * XAxisFromZAxis(relativeFacing)
+            + YOf(localVector) * YAxisFromZAxis(relativeFacing)
+            + ZOf(localVector) * relativeFacing;
+
+    public static Vector WorldVectorForPlayerWithPitch(
+        Vector localVector = Vector(0,0,0),
+        Player relativePlayer = EventPlayer(),
+        Boolean transformationIncludesTranslation = false
+    ):
+        WorldVectorForPositionWithPitch(localVector, EyePosition(relativePlayer),
+            FacingDirectionOf(relativePlayer), transformationIncludesTranslation);
+
+    public static Vector LocalVectorForPositionWithPitch(
+        Vector worldVector = Vector(0,0,0),
+        Vector relativePosition = Vector(0,0,0),
+        Vector relativeFacing = Forward(),
+        Boolean transformationIncludesTranslation = false
+    ):
+        Vector(
+            MagnitudeOfInDirection(
+                <Number>transformationIncludesTranslation * relativePosition - worldVector,
+                XAxisFromZAxis(relativeFacing)
+            ),
+            MagnitudeOfInDirection(
+                worldVector - <Number>transformationIncludesTranslation * relativePosition,
+                YAxisFromZAxis(relativeFacing)
+            ),
+            MagnitudeOfInDirection(
+                worldVector - <Number>transformationIncludesTranslation * relativePosition,
+                relativeFacing
+            )
+        );
+
+    public static Vector LocalVectorForPlayerWithPitch(
+        Vector localVector = Vector(0,0,0),
+        Player relativePlayer = EventPlayer(),
+        Boolean transformationIncludesTranslation = false
+    ):
+        LocalVectorForPositionWithPitch(localVector, EyePosition(relativePlayer),
+            FacingDirectionOf(relativePlayer), transformationIncludesTranslation);
+
+    public static Vector LocalVectorForPosition(
+        Vector localVector = Vector(0,0,0),
+        Vector relativePosition = Vector(0,0,0),
+        Vector relativeFacing = Forward(),
+        Boolean transformationIncludesTranslation = false
+    ):
+        LocalVectorForPositionWithPitch(localVector, relativePosition,
+            DirectionFromAngles(HorizontalAngleFromDirection(relativeFacing), 0),
+            transformationIncludesTranslation);
 }

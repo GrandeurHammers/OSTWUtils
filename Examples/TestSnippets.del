@@ -1,0 +1,312 @@
+import "TestChamberSettings.lobby";
+import "../Diagnostics.del";
+import "../Miscellaneous.del";
+
+globalvar Diagnostics disp = new Diagnostics(
+    ShowServerLoadAverage:  true, 
+    ShowServerLoadPeak:     true
+);
+
+playervar Vector[] posTimeline = [];
+playervar Vector[] dirTimeline = [];
+playervar Boolean isRewinding = false;
+Vector posFromEyePos(Vector pos): pos + VectorTowards(EyePosition(), PositionOf());
+Number pollDelay: 4 * 0.016;
+Number timelineLength: 3;
+Number rewindDuration: 1;
+Number timeDelta: TotalTimeElapsed() - EvaluateOnce(TotalTimeElapsed());
+rule: "Record timeline"
+Event.OngoingPlayer
+if(HasSpawned())
+{
+    CreateEffect(
+        VisibleTo:      EventPlayer(),
+        Type:           Effect.Orb,
+        Color:          Color.SkyBlue,
+        Position:       LastOf(posTimeline),
+        Reevaluation:   EffectRev.PositionAndRadius
+    );
+    while(true)
+    {
+        if(!isRewinding)
+        {
+            posTimeline = Append(EyePosition(), posTimeline);
+            dirTimeline = Append(EyePosition() + FacingDirectionOf(), dirTimeline);
+            posTimeline = ArraySlice(posTimeline, 0, timelineLength / pollDelay);
+            dirTimeline = ArraySlice(dirTimeline, 0, timelineLength / pollDelay);
+        }
+        Wait(pollDelay);
+    }
+}
+
+rule: "Start rewind"
+Event.OngoingPlayer
+if(IsButtonHeld(EventPlayer(), Button.Interact))
+{
+    if(CountOf(posTimeline) < timelineLength / pollDelay) 
+    {
+        SmallMessage(EventPlayer(), "Not ready yet");
+        PlayEffect(EventPlayer(), PlayEffect.ExplosionSound, Color.White, EventPlayer(), 100);
+    }
+    else
+    {
+        isRewinding = true;
+        PlayEffect(AllPlayers(), PlayEffect.TracerRecallDisappearEffect, <Color>TeamOf(), EventPlayer());
+        PlayEffect(AllPlayers(), PlayEffect.TracerRecallDisappearSound, <Color>TeamOf(), EventPlayer(), 100);
+        StunWithoutEffects(EventPlayer(), null, rewindDuration);
+        StartForcingPlayerPosition(EventPlayer(), PositionOf(), false);
+        SetStatus(EventPlayer(), null, Status.PhasedOut, rewindDuration);
+        SetInvisible(EventPlayer(), InvisibleTo.All);
+        StartCamera(
+            Player:         EventPlayer(),
+            EyePosition:    UpdateEveryFrame(LinearInterpolate(
+                posTimeline[Math.Floor(timelineLength * timeDelta / pollDelay / (rewindDuration * 0.9))],
+                posTimeline[Math.Ceiling(timelineLength * timeDelta / pollDelay / (rewindDuration * 0.9))],
+                (timelineLength * timeDelta / pollDelay / (rewindDuration * 0.9)) - Math.Floor(timelineLength * timeDelta / pollDelay / (rewindDuration * 0.9))
+            )),
+            LookAtPosition: UpdateEveryFrame(LinearInterpolate(
+                dirTimeline[Math.Floor(timelineLength * timeDelta / pollDelay / (rewindDuration * 0.9))],
+                dirTimeline[Math.Ceiling(timelineLength * timeDelta / pollDelay / (rewindDuration * 0.9))],
+                (timelineLength * timeDelta / pollDelay / (rewindDuration * 0.9)) - Math.Floor(timelineLength * timeDelta / pollDelay / (rewindDuration * 0.9))
+            )),
+            BlendSpeed:     0
+        );
+        Wait(rewindDuration);
+        StopForcingPlayerPosition();
+        Teleport(EventPlayer(), posFromEyePos(LastOf(posTimeline)));
+        SetFacing(EventPlayer(), LastOf(dirTimeline) - LastOf(posTimeline));
+        StopCamera(EventPlayer());
+        SetInvisible(EventPlayer(), InvisibleTo.None);
+        isRewinding = false;
+        MinWait();
+        PlayEffect(AllPlayers(), PlayEffect.TracerRecallReappearEffect, <Color>TeamOf(), EventPlayer());
+        PlayEffect(AllPlayers(), PlayEffect.TracerRecallReappearSound, <Color>TeamOf(), EventPlayer(), 100);
+    }
+}
+
+
+
+//*/
+
+/*
+//////////////////////////////
+// Blind
+//////////////////////////////
+
+import "TestChamberSettings.lobby";
+import "../Diagnostics.del";
+import "../Math.del";
+
+globalvar Diagnostics disp = new Diagnostics(
+    ShowServerLoadAverage:  true, 
+    ShowServerLoadPeak:     true, 
+    ShowEntityCount:        true,
+    ShowTextCount:          true,
+    ShowClassMemory:        true
+);
+
+playervar Boolean isBlinded;
+
+Any CreateBlindOrb(Vector pos):
+    CreateEffect(
+        VisibleTo:          IsAlive(LocalPlayer()) && YOf(EyePosition(LocalPlayer())) < 0 ? LocalPlayer() : null,
+        Type:               Effect.Orb,
+        Color:              Color.Black,
+        Position:           UpdateEveryFrame(Math.WorldVectorForPlayerWithPitch(pos, LocalPlayer(), true)),
+        Reevaluation:       EffectRev.VisibleToPositionAndRadius
+    );
+
+rule: "Blind effects"
+{
+    CreateBlindOrb(Vector(-1.05,    0, 0.9));
+    CreateBlindOrb(Vector(-1.05, -0.7, 0.9));
+    CreateBlindOrb(Vector(-1.05,  0.7, 0.9));
+
+    CreateBlindOrb(Vector(-0.35,    0, 0.9));
+    CreateBlindOrb(Vector(-0.35, -0.7, 0.9));
+    CreateBlindOrb(Vector(-0.35,  0.7, 0.9));
+
+    CreateBlindOrb(Vector( 0.35,    0, 0.9));
+    CreateBlindOrb(Vector( 0.35, -0.7, 0.9));
+    CreateBlindOrb(Vector( 0.35,  0.7, 0.9));
+
+    CreateBlindOrb(Vector( 1.05,    0, 0.9));
+    CreateBlindOrb(Vector( 1.05, -0.7, 0.9));
+    CreateBlindOrb(Vector( 1.05,  0.7, 0.9));
+}
+
+rule: "Fall"
+Event.OngoingPlayer
+if(IsButtonHeld(EventPlayer(), Button.Interact))
+{
+    DisableMovementCollisionWithEnvironment(EventPlayer(), true);
+    Wait(1);
+    EnableMovementCollisionWithEnvironment(EventPlayer());
+}
+
+//*/
+
+/*
+//////////////////////////////
+// Camera test - third person
+//////////////////////////////
+
+import "../Diagnostics.del";
+
+globalvar Diagnostics disp = new Diagnostics(
+    ShowServerLoadAverage:  true, 
+    ShowServerLoadPeak:     true
+);
+
+globalvar Player lastPlayer;
+globalvar Player nextPlayer;
+
+rule: "Test cam transition"
+Event.OngoingPlayer
+if(IsButtonHeld(EventPlayer(), Button.Interact))
+{
+    lastPlayer = nextPlayer;
+    nextPlayer = RandomValueInArray(RemoveFromArray(AllPlayers(), lastPlayer));
+    DoCameraTransition(
+        player:                 AllPlayers(),
+        startEyePosition:       lastPlayer == null ? null : EyePosition(lastPlayer) + WorldVectorOf(Vector(-0.5, 0.25, 0), lastPlayer) - 3 * FacingDirectionOf(lastPlayer),
+        startLookAtPosition:    EyePosition(lastPlayer) + 50 * FacingDirectionOf(lastPlayer),
+        endEyePosition:         EyePosition(nextPlayer) + WorldVectorOf(Vector(-0.5, 0.25, 0), nextPlayer) - 3 * FacingDirectionOf(nextPlayer),
+        endLookAtPosition:      EyePosition(nextPlayer) + 50 * FacingDirectionOf(nextPlayer),
+        transDuration:          2,
+        easingFunction:         Ease.InOutCubic
+    );
+    WaitUntil(!IsButtonHeld(EventPlayer(), Button.Interact), 99999);
+}
+
+//*/
+
+
+/*
+//////////////////////////////
+// Camera test - randomized
+//////////////////////////////
+
+globalvar Vector lastEyePosition;
+globalvar Vector lastLookAtPosition;
+globalvar Vector nextEyePosition;
+globalvar Vector nextLookAtPosition;
+rule: "Test cam transition"
+Event.OngoingPlayer
+if(IsButtonHeld(EventPlayer(), Button.Interact))
+{
+    nextEyePosition = Vector(
+        RandomInteger(-16, 16),
+        RandomInteger(1, 10),
+        RandomInteger(-16, 16)
+    );
+    nextLookAtPosition = Vector(
+        RandomInteger(-16, 16),
+        RandomInteger(1, 10),
+        RandomInteger(-16, 16)
+    );
+    DoCameraTransition(
+        player:                 AllPlayers(),
+        startEyePosition:       EvaluateOnce(lastEyePosition),
+        startLookAtPosition:    EvaluateOnce(lastLookAtPosition),
+        endEyePosition:         nextEyePosition,
+        endLookAtPosition:      nextLookAtPosition,
+        transDuration:          2,
+        easingFunction:         Ease.InOutCubic
+    );
+    lastEyePosition = nextEyePosition;
+    lastLookAtPosition = nextLookAtPosition;
+    Wait(1);
+    WaitUntil(!IsButtonHeld(EventPlayer(), Button.Interact), 99999);
+}
+
+//*/
+
+/*
+//////////////////////////////
+// Cam reeval bug report
+//////////////////////////////
+
+rule: "Init"
+Event.OnPlayerJoin
+{
+    DisallowButton(EventPlayer(), Button.Ultimate);
+    DisallowButton(EventPlayer(), Button.Ability2);
+}
+
+globalvar Any expectedOrb;
+globalvar Any actualOrb;
+
+rule: "Start look"
+Event.OngoingPlayer
+if(IsButtonHeld(EventPlayer(), Button.Ability2))
+{
+    DestroyEffect(expectedOrb);
+    expectedOrb = CreateEffect(
+        VisibleTo:      AllPlayers(),
+        Type:           Effect.Orb,
+        Color:          Color.Blue,
+        Position:       Vector(16, 0.7, 19.5) + 2 * Right() * (TotalTimeElapsed() - EvaluateOnce(TotalTimeElapsed()))
+    );
+    if(!actualOrb) actualOrb = CreateEffect(
+        VisibleTo:      AllPlayers(),
+        Type:           Effect.Orb,
+        Color:          Color.Red,
+        Position:       Vector(16, 1.5, 19.5) + 2 * Right() * (TotalTimeElapsed() - EvaluateOnce(TotalTimeElapsed()))
+    );
+    StartCamera(
+        Player:         AllPlayers(),
+        EyePosition:    Vector(0, 5, 0),
+        LookAtPosition: UpdateEveryFrame(Vector(16, 1, 19.5) + 2 * Right() * (TotalTimeElapsed() - EvaluateOnce(TotalTimeElapsed()))),
+        BlendSpeed:     0
+    );
+}
+
+rule: "Stop look"
+Event.OngoingPlayer
+if(IsButtonHeld(EventPlayer(), Button.Ultimate))
+{
+    DestroyEffect(expectedOrb);
+    DestroyEffect(actualOrb);
+    expectedOrb = null;
+    actualOrb = null;
+    StopCamera(AllPlayers());
+}
+
+//*/
+
+/*
+//////////////////////////////
+// Crosshair
+//////////////////////////////
+
+import "../OnScreenText.del";
+
+playervar Boolean hasAlternateCrosshair;
+rule: "crosshair"
+Event.OngoingPlayer
+{
+    hasAlternateCrosshair = true;
+    OnScreenText.CreateOnScreenText(
+        VisibleTo:      hasAlternateCrosshair ? EventPlayer() : null,
+        Header:         "┼",
+        PositionX:      0,
+        PositionY:      -0.005,
+        Scale:          3.5,
+        Reevaluation:   InworldTextRev.VisibleToPositionAndString,
+        Color:          CustomColor(0, 255, 13, 50),
+        Spectators:     Spectators.VisibleNever
+    );
+    OnScreenText.CreateOnScreenText(
+        VisibleTo:      hasAlternateCrosshair ? EventPlayer() : null,
+        Header:         "●",
+        PositionX:      0.004,
+        PositionY:      0.003,
+        Scale:          3.5,
+        Reevaluation:   InworldTextRev.VisibleToPositionAndString,
+        Color:          CustomColor(255, 255, 255, 1),
+        Spectators:     Spectators.VisibleNever
+    );
+}
+
+//*/

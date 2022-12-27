@@ -1,0 +1,18 @@
+{
+  "Modes": {
+    "Skirmish": {
+      "Enabled Maps": [
+        "Workshop Chamber"
+      ],
+      "Hero Limit": "Off",
+      "Respawn Time Scalar": 30.0
+    }
+  },
+  "Heroes": {
+    "General": {
+      "General": {
+        "Ability Cooldown Time": 10
+      }
+    }
+  }
+}

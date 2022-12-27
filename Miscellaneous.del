@@ -1,3 +1,133 @@
+import "Math.del";
+import "EasingFunctions.del";
+
 String AltFont(Any s): <" <0> ", s>;
 
 Boolean IsHero(Hero hero, Player player = EventPlayer()): (HeroOf(player) == hero) || (HeroBeingDuplicated(player) == hero);
+
+void StartCamWith1PTransition(in Player | Player[] player = EventPlayer(),
+                              in Player | Vector eyePosition = Vector(0,0,0),
+                              in Player | Vector lookAtPosition = Vector(0,0,0),
+                              in Number transDuration = 0.2)
+{
+    StartCamera(
+        Player:         player,
+        EyePosition:    UpdateEveryFrame(LinearInterpolate(
+            EyePosition(LocalPlayer()),
+            eyePosition,
+            Math.Clamp((TotalTimeElapsed() - EvaluateOnce(TotalTimeElapsed())) / transDuration, 0, 1))),
+        LookAtPosition: UpdateEveryFrame(LinearInterpolate(
+            EyePosition(LocalPlayer()) + 5*FacingDirectionOf(LocalPlayer()),
+            lookAtPosition,
+            Math.Clamp((TotalTimeElapsed() - EvaluateOnce(TotalTimeElapsed())) / transDuration, 0, 1))),
+        BlendSpeed:     0
+    );
+}
+
+void StopCamWith1PTransition(in Player | Player[] player = EventPlayer(),
+                             in Player | Vector eyePosition = Vector(0,0,0),
+                             in Player | Vector lookAtPosition = Vector(0,0,0),
+                             in Number transDuration = 0.2)
+{
+    StopCamera(player);
+    StartCamera(
+        Player:         player,
+        EyePosition:    UpdateEveryFrame(LinearInterpolate(
+            eyePosition,
+            EyePosition(LocalPlayer()),
+            Math.Clamp((TotalTimeElapsed() - EvaluateOnce(TotalTimeElapsed())) / transDuration, 0, 1))),
+        LookAtPosition: UpdateEveryFrame(LinearInterpolate(
+            lookAtPosition,
+            EyePosition(LocalPlayer()) + 5*FacingDirectionOf(LocalPlayer()),
+            Math.Clamp((TotalTimeElapsed() - EvaluateOnce(TotalTimeElapsed())) / transDuration, 0, 1))),
+        BlendSpeed:     0
+    );
+    WaitAsync(transDuration, () => { StopCamera(player); } );
+}
+
+void DoCameraTransition(in Player | Player[] player = EventPlayer(),
+                           in Player | Vector startEyePosition = null,
+                           in Player | Vector startLookAtPosition = Vector(0,0,0),
+                           in Player | Vector endEyePosition = null,
+                           in Player | Vector endLookAtPosition = Vector(0,0,0),
+                           in Number transDuration = 1,
+                           (Number) => Number easingFunction /*= Ease.InOutSine*/)
+{
+    StopCamera();
+    StartCamera(
+        Player:         player,
+        EyePosition:    UpdateEveryFrame(LinearInterpolate(
+            startEyePosition == null ? EyePosition(LocalPlayer()) : startEyePosition,
+            endEyePosition   == null ? EyePosition(LocalPlayer()) : endEyePosition,
+            easingFunction(Math.Clamp((TotalTimeElapsed() - EvaluateOnce(TotalTimeElapsed())) / transDuration, 0, 1)))),
+        LookAtPosition: UpdateEveryFrame(LinearInterpolate(
+            startEyePosition == null ? EyePosition(LocalPlayer()) + FacingDirectionOf(LocalPlayer()) : startLookAtPosition,
+            endEyePosition   == null ? EyePosition(LocalPlayer()) + FacingDirectionOf(LocalPlayer()) : endLookAtPosition,
+            easingFunction(Math.Clamp((TotalTimeElapsed() - EvaluateOnce(TotalTimeElapsed())) / transDuration, 0, 1)))),
+        BlendSpeed:     0
+    );
+    Wait(transDuration + 0.1);
+    if(endEyePosition == null) StopCamera(player);
+    else StartCamera(
+        Player:         player,
+        EyePosition:    UpdateEveryFrame(endEyePosition),
+        LookAtPosition: UpdateEveryFrame(endLookAtPosition),
+        BlendSpeed:     0
+    );
+}
+
+Number TimeSince(Number timestamp): TotalTimeElapsed() - timestamp;
+Number TimeDelta(): TimeSince(EvaluateOnce(TotalTimeElapsed()));
+
+void StunWithoutEffects(Player | Player[] Player = EventPlayer(), Player Assister = null, Number Duration = 0)
+{
+    CancelPrimaryAction(Player);
+    SetStatus(Player, Assister, Status.Rooted, Duration);
+    StartFacing(Player, null, 0);
+    DisallowAllButtons(Player);
+    WaitAsync(Duration, () => {
+        ClearStunWithoutEffects(Player);
+    });
+}
+
+void ClearStunWithoutEffects(Player | Player[] Player = EventPlayer())
+{
+    ClearStatus(Player, Status.Rooted);
+    StopFacing(Player);
+    AllowAllButtons(Player);
+}
+
+void DisallowAllButtons(Player | Player[] Player = EventPlayer())
+{
+    DisallowButton(Player, Button.PrimaryFire);
+    DisallowButton(Player, Button.SecondaryFire);
+    DisallowButton(Player, Button.Ability1);
+    DisallowButton(Player, Button.Ability2);
+    DisallowButton(Player, Button.Ultimate);
+    DisallowButton(Player, Button.Interact);
+    DisallowButton(Player, Button.Jump);
+    DisallowButton(Player, Button.Melee);
+    DisallowButton(Player, Button.Reload);
+    DisallowButton(Player, Button.Crouch);
+}
+
+void AllowAllButtons(Player | Player[] Player = EventPlayer())
+{
+    AllowButton(Player, Button.PrimaryFire);
+    AllowButton(Player, Button.SecondaryFire);
+    AllowButton(Player, Button.Ability1);
+    AllowButton(Player, Button.Ability2);
+    AllowButton(Player, Button.Ultimate);
+    AllowButton(Player, Button.Interact);
+    AllowButton(Player, Button.Jump);
+    AllowButton(Player, Button.Melee);
+    AllowButton(Player, Button.Reload);
+    AllowButton(Player, Button.Crouch);
+}
+
+Boolean RayCastHit(
+    Vector StartPos, Vector EndPos, Player | Player[] PlayersToInclude = null,
+    Player | Player[] PlayersToExclude = null, Boolean IncludePlayerOwnedObjects = false
+):
+    RayCastHitPosition(StartPos, EndPos, PlayersToInclude, PlayersToExclude, IncludePlayerOwnedObjects)
+    != EndPos;
