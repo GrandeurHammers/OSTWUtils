@@ -2,8 +2,8 @@ import "Math.del";
 
 class Ease {
     private static Number c1: 1.70158;
-    private static Number c2: c1 * 1.525;
-    private static Number c3: c1 + 1;
+    private static Number c2: Ease.c1 * 1.525;
+    private static Number c3: Ease.c1 + 1;
     private static Number c4: (2 * Math.PI) / 3;
     private static Number c5: (2 * Math.PI) / 4.5;
     private static Number n1: 7.5625;
