@@ -13,113 +13,113 @@ class Ease {
     private static Number pow4(Number n): n * n * n * n;
     private static Number pow5(Number n): n * n * n * n * n;
 
-    public static (Number) => Number InSine = (Number frac)
+    public static const (Number) => Number InSine = (Number frac)
         => 1 - CosineFromRadians(frac*Math.PI/2);
-    public static (Number) => Number OutSine = (Number frac)
+    public static const (Number) => Number OutSine = (Number frac)
         => SineFromRadians(frac*Math.PI/2);
 
-    public static (Number) => Number InOutSine = (Number frac)
+    public static const (Number) => Number InOutSine = (Number frac)
         => -1*(CosineFromRadians(Math.PI*frac) - 1) / 2;
 
-    public static (Number) => Number InQuad = (Number frac)
+    public static const (Number) => Number InQuad = (Number frac)
         => pow2(frac);
 
-    public static (Number) => Number OutQuad = (Number frac)
+    public static const (Number) => Number OutQuad = (Number frac)
         => 1 - pow2(1 - frac);
 
-    public static (Number) => Number InOutQuad = (Number frac)
+    public static const (Number) => Number InOutQuad = (Number frac)
         => frac < 0.5
             ? 2 * pow2(frac)
             : 1 - pow2(-2 * frac + 2) / 2;
 
-    public static (Number) => Number InCubic = (Number frac)
+    public static const (Number) => Number InCubic = (Number frac)
         => pow3(frac);
-    public static (Number) => Number OutCubic = (Number frac)
+    public static const (Number) => Number OutCubic = (Number frac)
         => 1 - pow3(1 - frac);
 
-    public static (Number) => Number InOutCubic = (Number frac)
+    public static const (Number) => Number InOutCubic = (Number frac)
         => frac < 0.5
             ? 4 * pow3(frac)
             : 1 - pow3(-2 * frac + 2) / 2;
 
-    public static (Number) => Number InQuart = (Number frac)
+    public static const (Number) => Number InQuart = (Number frac)
         => pow4(frac);
 
-    public static (Number) => Number OutQuart = (Number frac)
+    public static const (Number) => Number OutQuart = (Number frac)
         => 1 - pow4(1 - frac);
 
-    public static (Number) => Number InOutQuart = (Number frac)
+    public static const (Number) => Number InOutQuart = (Number frac)
         => frac < 0.5
             ? 8 * pow4(frac)
             : 1 - pow4(-2 * frac + 2) / 2;
 
-    public static (Number) => Number InQuint = (Number frac)
+    public static const (Number) => Number InQuint = (Number frac)
         => pow5(frac);
 
-    public static (Number) => Number OutQuint = (Number frac)
+    public static const (Number) => Number OutQuint = (Number frac)
         => 1 - pow5(1 - frac);
 
-    public static (Number) => Number InOutQuint = (Number frac)
+    public static const (Number) => Number InOutQuint = (Number frac)
         => frac < 0.5
             ? 16 * pow5(frac)
             : 1 - pow5(-2 * frac + 2) / 2;
 
-    public static (Number) => Number InExpo = (Number frac)
+    public static const (Number) => Number InExpo = (Number frac)
         => frac == 0 ? 0 : 2^(10 * frac - 10);
 
-    public static (Number) => Number OutExpo = (Number frac)
+    public static const (Number) => Number OutExpo = (Number frac)
         => frac == 1 ? 1 : 1 - 2^(-10 * frac);
 
-    public static (Number) => Number InOutExpo = (Number frac)
+    public static const (Number) => Number InOutExpo = (Number frac)
         => frac ==  0 ? 0
          : frac ==  1 ? 1
          : frac < 0.5 ?
             2^(20 * frac - 10) / 2
             : (2 - 2^(-20 * frac + 10)) / 2;
 
-    public static (Number) => Number InCirc = (Number frac)
+    public static const (Number) => Number InCirc = (Number frac)
         => 1 - SquareRoot(1 - pow2(frac));
 
-    public static (Number) => Number OutCirc = (Number frac)
+    public static const (Number) => Number OutCirc = (Number frac)
         => SquareRoot(1 - pow2(frac - 1));
 
-    public static (Number) => Number InOutCirc = (Number frac)
+    public static const (Number) => Number InOutCirc = (Number frac)
         => frac < 0.5
             ? (1 - SquareRoot(1 - pow2(2 * frac))) / 2
             : (SquareRoot(1 - pow2(-2 * frac + 2)) + 1) / 2;
 
-    public static (Number) => Number InBack = (Number frac)
+    public static const (Number) => Number InBack = (Number frac)
         => c3 * pow3(frac) - c1 * pow2(frac);
 
-    public static (Number) => Number OutBack = (Number frac)
+    public static const (Number) => Number OutBack = (Number frac)
         => 1 + c3 * pow3(frac - 1) + c1 * pow2(frac - 1);
 
-    public static (Number) => Number InOutBack = (Number frac)
+    public static const (Number) => Number InOutBack = (Number frac)
         => frac < 0.5
             ? (pow2(2 * frac) * ((c2 + 1) * 2 * frac - c2)) / 2
             : (pow2(2 * frac - 2) * ((c2 + 1) * (frac * 2 - 2) + c2) + 2) / 2;
 
-    public static (Number) => Number InElastic = (Number frac)
+    public static const (Number) => Number InElastic = (Number frac)
         => frac == 0 ? 0
          : frac == 1 ? 1
          : -(2^(10 * frac - 10)) * SineFromRadians((frac * 10 - 10.75) * c4);
 
-    public static (Number) => Number OutElastic = (Number frac)
+    public static const (Number) => Number OutElastic = (Number frac)
         => frac == 0 ? 0
          : frac == 1 ? 1
          : 2^(-10 * frac) * SineFromRadians((frac * 10 - 0.75) * c4) + 1;
 
-    public static (Number) => Number InOutElastic = (Number frac)
+    public static const (Number) => Number InOutElastic = (Number frac)
         => frac == 0 ? 0
          : frac == 1 ? 1
          : frac < 0.5
                 ? -(2^(20 * frac - 10) * SineFromRadians((20 * frac - 11.125) * c5)) / 2
                 : (2^(-20 * frac + 10) * SineFromRadians((20 * frac - 11.125) * c5)) / 2 + 1;
 
-    public static (Number) => Number InBounce = (Number frac)
+    public static const (Number) => Number InBounce = (Number frac)
         => 1 - OutBounce(1 - frac);
 
-    public static (Number) => Number OutBounce = (Number frac)
+    public static const (Number) => Number OutBounce = (Number frac)
         => frac < 1/d1 ?
             n1 * pow2(frac)
          : frac < 2/d1 ?
@@ -128,7 +128,7 @@ class Ease {
             n1 * pow2(frac - 2.25/d1) + 0.9375 :
             n1 * pow2(frac - 2.625/d1) + 0.984375;
 
-    public static (Number) => Number InOutBounce = (Number frac)
+    public static const (Number) => Number InOutBounce = (Number frac)
         => frac < 0.5
             ? (1 - OutBounce(1 - 2 * frac)) / 2
             : (1 + OutBounce(2 * frac - 1)) / 2;

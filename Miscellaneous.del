@@ -51,7 +51,7 @@ void DoCameraTransition(in Player | Player[] player = EventPlayer(),
                            in Player | Vector endEyePosition = null,
                            in Player | Vector endLookAtPosition = Vector(0,0,0),
                            in Number transDuration = 1,
-                           (Number) => Number easingFunction /*= Ease.InOutSine*/)
+                           const (Number) => Number easingFunction /*= Ease.InOutSine*/)
 {
     StopCamera();
     StartCamera(
