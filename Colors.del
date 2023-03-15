@@ -48,6 +48,7 @@ class Colors {
          [  0, 230, 151, 255], [160, 232,  27, 255], [127, 127, 127, 255],
          [100,  50, 255, 255], [255,  50, 145, 255], [  0,   0,   0, 255]];
     public static Color Hidden: CustomColor(alpha: 0);
+    public static Color LighterRed: CustomColor(200,50,50,255);
 }
 
 class TeamBasedColor {
