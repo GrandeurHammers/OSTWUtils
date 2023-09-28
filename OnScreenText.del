@@ -14,12 +14,13 @@ class OnScreenText {
         Number Scale = 1,
         InworldTextRev Reevaluation = InworldTextRev.VisibleToPositionStringAndColor,
         Color Color = Color.White,
-        Spectators Spectators = Spectators.DefaultVisibility
+        Spectators Spectators = Spectators.DefaultVisibility,
+        in Player PerspectivePlayer = LocalPlayer()
     ):
         CreateInWorldText(
             VisibleTo: VisibleTo,
             Header: Header,
-            Position: UpdateEveryFrame(PlayerRender(LocalPlayer(), PositionX, PositionY)),
+            Position: UpdateEveryFrame(PlayerRender(PerspectivePlayer, PositionX, PositionY)),
             Scale: Scale,
             Clipping: Clipping.DoNotClip,
             Reevaluation: Reevaluation,
