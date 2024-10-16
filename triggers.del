@@ -1,0 +1,39 @@
+# Stores triggers per player
+playervar Trigger[] _watch_triggers=[];
+
+# Macros
+Boolean anyTriggersHeld(Trigger[] triggers): triggers.IsTrueForAny(t => t.isTriggerHeld());
+Boolean has_triggers():_watch_triggers.Length!=0;
+
+# Holds the references we care about
+struct Trigger
+{
+    public Button[] toHold;
+    public ()=>void toUse;
+    # Technically this only works for up to THREE keys, can be expanded if we need to
+    public Boolean isTriggerHeld(): b(0, b(1, b(2)));
+    Boolean b(Number i, Boolean next = true): (i >= toHold.Length || (IsButtonHeld(EventPlayer(), toHold[i]) && next));
+}
+  
+// This is the rule that checks players for triggers and executes them
+rule: 'Check players for triggers'
+Event.OngoingPlayer
+if(IsAlive() && has_triggers())
+if(anyTriggersHeld(_watch_triggers))
+{
+    foreach(Trigger t in _watch_triggers) {
+        if (t.isTriggerHeld())
+        {
+            t.toUse();
+        }
+    }
+}
+# Main Entrypoint
+# Use this to add a trigger for a player
+# cb gets executed when the player is holding the buttons
+void add_trigger(in Player p, in Button[] buttonsToHold, in ()=>void cb) { 
+    Trigger t = {toHold: buttonsToHold,toUse: cb};
+    // `+= [t]` is needed due to storing a struct with a macro in it
+    // https://github.com/ItsDeltin/Overwatch-Script-To-Workshop/issues/431#issuecomment-1452732565
+    p._watch_triggers += [t];
+} 
