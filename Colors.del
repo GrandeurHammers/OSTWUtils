@@ -48,6 +48,21 @@ class Colors {
          [  0, 230, 151, 255], [160, 232,  27, 255], [127, 127, 127, 255],
          [100,  50, 255, 255], [255,  50, 145, 255], [  0,   0,   0, 255]];
     public static Color Hidden: CustomColor(alpha: 0);
+
+    /* made using equations from https://www.rapidtables.com/convert/color/hsv-to-rgb.html */
+    public static Number hsv_C(Number s, Number v): s * v;
+    public static Number hsv_X(Number h, Number s, Number v): hsv_C(s,v) * (1 - AbsoluteValue((h/60) % 2 - 1));
+    public static Number hsv_M(Number s, Number v): v - hsv_C(s,v);
+
+    public static Number hsv_r(Number h, Number s, Number v): AbsoluteValue(h - 180) >= 120 ? hsv_C(s,v) : (AbsoluteValue(h - 180) >= 60 ? hsv_X(h,s,v) : 0);
+    public static Number hsv_g(Number h, Number s, Number v): h % 180 < 60 ? hsv_X(h,s,v) : (h < 180 ? hsv_C(s,v) : 0);
+    public static Number hsv_b(Number h, Number s, Number v): h % 180 >= 120 ? hsv_X(h,s,v) : (h >= 180 ? hsv_C(s,v) : 0);
+
+    public static Color hsv(Number hue, Number saturation, Number value, Number alpha = 255): CustomColor(
+    red:   (hsv_r(hue, saturation, value) + hsv_M(saturation, value)) * 255,
+    green: (hsv_g(hue, saturation, value) + hsv_M(saturation, value)) * 255,
+    blue:  (hsv_b(hue, saturation, value) + hsv_M(saturation, value)) * 255,
+    alpha: alpha);
 }
 
 class TeamBasedColor {

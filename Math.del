@@ -8,6 +8,12 @@ class Math {
     //////////////////////////////////
     // Functions
     //////////////////////////////////
+    # Computes the mathematical modulo instead of the remainder modulo.
+    #
+    # For example, `-13 % 5` in Workshop returns `-3`. This function will return `2` instead.
+    # - `number`: The left-hand operand of the modulus operator
+    # - `base`: The right-hand operand of the modulus operator
+    public static Number MathModulo(Number number, Number base): Modulo(Modulo(number, base) + base, base);
     public static Number Floor(Number n): RoundToInteger(n, Rounding.Down);
     public static Number Ceiling(Number n): RoundToInteger(n, Rounding.Up);
     public static Number Quotient(Number n, Number d): Floor(n/d);

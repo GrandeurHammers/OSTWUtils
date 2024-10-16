@@ -1,19 +1,19 @@
 import "Math.del";
 
 class OnScreenText {
-    public static Vector WorldRender(Vector eyePos, Vector facingDir, Number screenX, Number screenY):
+    public static Vector WorldRender(in Vector eyePos, in Vector facingDir, in Number screenX, in Number screenY):
         Math.WorldVectorForPositionWithPitch(Vector(100 * screenX, 100 * (screenY - 0.2), 300), eyePos, facingDir, true);
-    public static Vector PlayerRender(Player player, Number screenX, Number screenY):
+    public static Vector PlayerRender(in Player player, in Number screenX, in Number screenY):
         Math.WorldVectorForPlayerWithPitch(Vector(100 * screenX, 100 * (screenY - 0.2), 300), player, true);
 
     public static Any CreateOnScreenText(
-        Player | Player[] VisibleTo = EventPlayer(),
-        Any Header = "",
-        Number PositionX = 0,
-        Number PositionY = 0,
-        Number Scale = 1,
+        in Player | Player[] VisibleTo = EventPlayer(),
+        in Any Header = "",
+        in Number PositionX = 0,
+        in Number PositionY = 0,
+        in Number Scale = 1,
         InworldTextRev Reevaluation = InworldTextRev.VisibleToPositionStringAndColor,
-        Color Color = Color.White,
+        in Color Color = Color.White,
         Spectators Spectators = Spectators.DefaultVisibility
     ):
         CreateInWorldText(

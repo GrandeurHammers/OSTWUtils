@@ -97,7 +97,7 @@ void ClearStunWithoutEffects(Player | Player[] Player = EventPlayer())
     AllowAllButtons(Player);
 }
 
-void DisallowAllButtons(Player | Player[] Player = EventPlayer())
+void DisallowAllButtons(in Player | Player[] Player = EventPlayer())
 {
     DisallowButton(Player, Button.PrimaryFire);
     DisallowButton(Player, Button.SecondaryFire);
@@ -111,7 +111,7 @@ void DisallowAllButtons(Player | Player[] Player = EventPlayer())
     DisallowButton(Player, Button.Crouch);
 }
 
-void AllowAllButtons(Player | Player[] Player = EventPlayer())
+void AllowAllButtons(in Player | Player[] Player = EventPlayer())
 {
     AllowButton(Player, Button.PrimaryFire);
     AllowButton(Player, Button.SecondaryFire);
