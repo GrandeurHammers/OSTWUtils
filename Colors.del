@@ -58,6 +58,11 @@ class Colors {
     public static Number hsv_g(Number h, Number s, Number v): h % 180 < 60 ? hsv_X(h,s,v) : (h < 180 ? hsv_C(s,v) : 0);
     public static Number hsv_b(Number h, Number s, Number v): h % 180 >= 120 ? hsv_X(h,s,v) : (h >= 180 ? hsv_C(s,v) : 0);
 
+    /**
+     * hue: Measured from 0 to 360
+     * saturation: Measured from 0 to 1
+     * value: Measures from 0 to 1
+     */
     public static Color hsv(Number hue, Number saturation, Number value, Number alpha = 255): CustomColor(
     red:   (hsv_r(hue, saturation, value) + hsv_M(saturation, value)) * 255,
     green: (hsv_g(hue, saturation, value) + hsv_M(saturation, value)) * 255,
