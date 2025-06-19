@@ -1,0 +1,32 @@
+single struct ResetPoint {
+  public Vector position;
+  public Vector facing;
+  public static ResetPoint New(Vector pos, Vector facing): single { position: pos, facing: facing };
+}
+
+ResetPoint NewResetFromPlayer(Player p = EventPlayer()): { position: PositionOf(p), facing: FacingDirectionOf(p) };
+
+void TeleportPlayerToResetPoint(in Player p, in ResetPoint resetPoint) {
+  Teleport(p, resetPoint.position);
+  StopFacing(p);
+  MinWait();
+  SetFacing(p, resetPoint.facing, Relative.ToWorld);
+  # Because for SOME REASON setting FACING and TELEPORTING in the SAME FRAME cancels the TELEPORT
+  Wait(0.032);
+  StartFacing(p, resetPoint.facing, 1000, Relative.ToWorld);
+  MinWait();
+  WaitUntil(AngleBetweenVectors(FacingDirectionOf(p), resetPoint.facing) < 0.1, 0.25);
+  StopFacing(p);
+}
+
+void TeleportPlayerToResetPoint_CONSTANT_TIME(in Player p, in ResetPoint resetPoint) {
+  Teleport(p, resetPoint.position);
+  StopFacing(p);
+  MinWait();
+  SetFacing(p, resetPoint.facing, Relative.ToWorld);
+  # Because for SOME REASON setting FACING and TELEPORTING in the SAME FRAME cancels the TELEPORT
+  Wait(0.032);
+  StartFacing(p, resetPoint.facing, 1000, Relative.ToWorld);
+  Wait(0.25);
+  StopFacing(p);
+}
