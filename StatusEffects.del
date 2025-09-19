@@ -1,0 +1,6 @@
+Boolean IsHardCCd(Player player = EventPlayer()): [
+  HasStatus(player, Status.Asleep),
+  HasStatus(player, Status.Stunned),
+  HasStatus(player, Status.KnockedDown),
+  HasStatus(player, Status.Frozen)
+].IsTrueForAny(c => c);

@@ -1,0 +1,6 @@
+globalvar Number timer;
+rule: "[OSTWUtils/SyncedTimer.del] Create a synced timer"
+{
+  timer = TotalTimeElapsed();
+  ChaseVariableAtRate(timer, 1000000, 1, RateChaseReevaluation.None);
+}

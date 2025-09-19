@@ -5,10 +5,15 @@ String AltFont(Any s): <" <0> ", s>;
 
 Boolean IsHero(Hero hero, Player player = EventPlayer()): (HeroOf(player) == hero) || (HeroBeingDuplicated(player) == hero);
 
+void WaitForeverUntil(Boolean condition) {
+    WaitUntil(condition, 1000000);
+}
+
 void StartCamWith1PTransition(in Player | Player[] player = EventPlayer(),
                               in Player | Vector eyePosition = Vector(0,0,0),
                               in Player | Vector lookAtPosition = Vector(0,0,0),
-                              in Number transDuration = 0.2)
+                              in Number transDuration = 0.2,
+                              in Number timer = TotalTimeElapsed())
 {
     StartCamera(
         Player:         player,
@@ -27,7 +32,8 @@ void StartCamWith1PTransition(in Player | Player[] player = EventPlayer(),
 void StopCamWith1PTransition(in Player | Player[] player = EventPlayer(),
                              in Player | Vector eyePosition = Vector(0,0,0),
                              in Player | Vector lookAtPosition = Vector(0,0,0),
-                             in Number transDuration = 0.2)
+                             in Number transDuration = 0.2,
+                             in Number timer = TotalTimeElapsed())
 {
     StopCamera(player);
     StartCamera(
