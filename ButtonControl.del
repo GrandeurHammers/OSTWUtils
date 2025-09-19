@@ -1,0 +1,86 @@
+globalvar Button[] AllButtons = [
+  Button.PrimaryFire,
+  Button.SecondaryFire,
+  Button.Ability1,
+  Button.Ability2,
+  Button.Crouch,
+  Button.Jump,
+  Button.Melee,
+  Button.Reload,
+  Button.Ultimate,
+  Button.Interact
+];
+
+playervar Number[] buttonLocks = AllButtons.Map(_ => 0);
+
+rule: "[lib/player/buttonControl.del] MONKEY PATCH - For Winston, disable secondary fire instead of just disallowing button (because disallow doesn't work on Winston)"
+Event.OngoingPlayer
+if (buttonLocks[AllButtons.IndexOf(Button.SecondaryFire)] > 0)
+if (HeroOf() == Hero.Winston)
+{
+  SetSecondaryFireEnabled(EventPlayer(), false);
+  WaitUntil(buttonLocks[AllButtons.IndexOf(Button.SecondaryFire)] == 0 || HeroOf() != Hero.Winston, 99999);
+  SetSecondaryFireEnabled(EventPlayer(), true);
+}
+
+rule: "[lib/player/buttonControl.del] MONKEY PATCH - For Mauga, disable primary fire instead of just disallowing button (because disallow doesn't work on Winston)"
+Event.OngoingPlayer
+if (buttonLocks[AllButtons.IndexOf(Button.PrimaryFire)] > 0)
+if (HeroOf() == Hero.Mauga)
+{
+  SetPrimaryFireEnabled(EventPlayer(), false);
+  WaitUntil(buttonLocks[AllButtons.IndexOf(Button.PrimaryFire)] == 0 || HeroOf() != Hero.Mauga, 99999);
+  SetPrimaryFireEnabled(EventPlayer(), true);
+}
+
+rule: "[lib/player/buttonControl.del] MONKEY PATCH - For Mauga, disable secondary fire instead of just disallowing button (because disallow doesn't work on Mauga)"
+Event.OngoingPlayer
+if (buttonLocks[AllButtons.IndexOf(Button.SecondaryFire)] > 0)
+if (HeroOf() == Hero.Mauga)
+{
+  SetSecondaryFireEnabled(EventPlayer(), false);
+  WaitUntil(buttonLocks[AllButtons.IndexOf(Button.SecondaryFire)] == 0 || HeroOf() != Hero.Mauga, 99999);
+  SetSecondaryFireEnabled(EventPlayer(), true);
+}
+
+void AddOneLockToAllButtons(in Player player = EventPlayer())
+{
+  player.buttonLocks = player.buttonLocks.Map((lockCount) => lockCount + 1);
+  UpdatePlayerButtonStatus(player);
+}
+
+void RemoveOneLockFromAllButtons(in Player player = EventPlayer())
+{
+  player.buttonLocks = player.buttonLocks.Map((lockCount) => lockCount - 1);
+  UpdatePlayerButtonStatus(player);
+}
+
+void UnlockAllButtons(in Player player = EventPlayer())
+{
+  player.buttonLocks = player.buttonLocks.Map((lockCount) => 0);
+  UpdatePlayerButtonStatus(player);
+}
+
+void AddOneLockToButton(in Player player = EventPlayer(), in Button button)
+{
+  player.buttonLocks[AllButtons.IndexOf(button)] += 1;
+  DisallowButton(player, button);
+}
+
+void RemoveOneLockFromButton(in Player player = EventPlayer(), in Button button)
+{
+  player.buttonLocks[AllButtons.IndexOf(button)] -= 1;
+  if (player.buttonLocks[AllButtons.IndexOf(button)] == 0) AllowButton(player, button);
+}
+
+void UpdatePlayerButtonStatus(Player player = EventPlayer()) "[lib/player/buttonControl.del] update player button status"
+{
+  foreach (Button button in AllButtons)
+  {
+    if (buttonLocks[AllButtons.IndexOf(button)] == 0) {
+      AllowButton(player, button);
+    } else {
+      DisallowButton(player, button);
+    }
+  }
+}
