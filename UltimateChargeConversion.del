@@ -1,6 +1,6 @@
 globalvar HeroUltimateCost[] UltChargeCostMap = import("UltimateCosts.json").HeroUltimateChargeCosts;
 
-single struct HeroUltimateCost
+struct HeroUltimateCost
 {
   public Hero hero;
   public Number ultimateCost;
