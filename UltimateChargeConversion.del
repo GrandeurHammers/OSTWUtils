@@ -1,0 +1,19 @@
+globalvar HeroUltimateCost[] UltChargeCostMap = import("UltimateCosts.json").HeroUltimateChargeCosts;
+
+single struct HeroUltimateCost
+{
+  public Hero hero;
+  public Number ultimateCost;
+}
+
+class UltimateChargeConversion
+{
+  public static Number UltimateCost(in Hero h):
+    UltChargeCostMap.FilteredArray(s => s.hero == h).First.ultimateCost;
+
+  public static Number UltimatePoints(in Hero h, in Number chargePercent):
+    UltimateCost(h) * (chargePercent / 100);
+
+  public static Number ChargePercentFromPoints(in Hero h, in Number points):
+    (points / UltimateCost(h)) * 100;
+}

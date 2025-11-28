@@ -1,0 +1,184 @@
+{
+  "HeroUltimateChargeCosts": [
+    {
+      "hero": { "hero": "Reaper" },
+      "ultimateCost": 2050
+    },
+    {
+      "hero": { "hero": "Tracer" },
+      "ultimateCost": 1375
+    },
+    {
+      "hero": { "hero": "Mercy" },
+      "ultimateCost": 2000
+    },
+    {
+      "hero": { "hero": "Hanzo" },
+      "ultimateCost": 1700
+    },
+    {
+      "hero": { "hero": "Torbjörn" },
+      "ultimateCost": 2350
+    },
+    {
+      "hero": { "hero": "Reinhardt" },
+      "ultimateCost": 1800
+    },
+    {
+      "hero": { "hero": "Pharah" },
+      "ultimateCost": 2200
+    },
+    {
+      "hero": { "hero": "Winston" },
+      "ultimateCost": 2525
+    },
+    {
+      "hero": { "hero": "Widowmaker" },
+      "ultimateCost": 1400
+    },
+    {
+      "hero": { "hero": "Bastion" },
+      "ultimateCost": 2050
+    },
+    {
+      "hero": { "hero": "Symmetra" },
+      "ultimateCost": 2025
+    },
+    {
+      "hero": { "hero": "Zenyatta" },
+      "ultimateCost": 2500
+    },
+    {
+      "hero": { "hero": "Genji" },
+      "ultimateCost": 2125
+    },
+    {
+      "hero": { "hero": "Roadhog" },
+      "ultimateCost": 2700
+    },
+    {
+      "hero": { "hero": "Cassidy" },
+      "ultimateCost": 1800
+    },
+    {
+      "hero": { "hero": "Junkrat" },
+      "ultimateCost": 2100
+    },
+    {
+      "hero": { "hero": "Zarya" },
+      "ultimateCost": 2500
+    },
+    {
+      "hero": { "hero": "Soldier: 76" },
+      "ultimateCost": 2750
+    },
+    {
+      "hero": { "hero": "Lúcio" },
+      "ultimateCost": 2900
+    },
+    {
+      "hero": { "hero": "D.Va" },
+      "ultimateCost": 1700
+    },
+    {
+      "hero": { "hero": "Mei" },
+      "ultimateCost": 1925
+    },
+    {
+      "hero": { "hero": "Sombra" },
+      "ultimateCost": 1850
+    },
+    {
+      "hero": { "hero": "Doomfist" },
+      "ultimateCost": 1975
+    },
+    {
+      "hero": { "hero": "Ana" },
+      "ultimateCost": 2300
+    },
+    {
+      "hero": { "hero": "Orisa" },
+      "ultimateCost": 2150
+    },
+    {
+      "hero": { "hero": "Brigitte" },
+      "ultimateCost": 2700
+    },
+    {
+      "hero": { "hero": "Moira" },
+      "ultimateCost": 2900
+    },
+    {
+      "hero": { "hero": "Wrecking Ball" },
+      "ultimateCost": 1850
+    },
+    {
+      "hero": { "hero": "Sojourn" },
+      "ultimateCost": 2300
+    },
+    {
+      "hero": { "hero": "Ashe" },
+      "ultimateCost": 2450
+    },
+    {
+      "hero": { "hero": "Echo" },
+      "ultimateCost": 1850
+    },
+    {
+      "hero": { "hero": "Baptiste" },
+      "ultimateCost": 2550
+    },
+    {
+      "hero": { "hero": "Kiriko" },
+      "ultimateCost": 2725
+    },
+    {
+      "hero": { "hero": "Junker Queen" },
+      "ultimateCost": 2700
+    },
+    {
+      "hero": { "hero": "Sigma" },
+      "ultimateCost": 2300
+    },
+    {
+      "hero": { "hero": "Ramattra" },
+      "ultimateCost": 2300
+    },
+    {
+      "hero": { "hero": "Lifeweaver" },
+      "ultimateCost": 2200
+    },
+    {
+      "hero": { "hero": "Mauga" },
+      "ultimateCost": 2700
+    },
+    {
+      "hero": { "hero": "Illari" },
+      "ultimateCost": 2975
+    },
+    {
+      "hero": { "hero": "Freja" },
+      "ultimateCost": 1750
+    },
+    {
+      "hero": { "hero": "Venture" },
+      "ultimateCost": 2125
+    },
+    {
+      "hero": { "hero": "Hazard" },
+      "ultimateCost": 2150
+    },
+    {
+      "hero": { "hero": "Juno" },
+      "ultimateCost": 2900
+    },
+    {
+      "hero": { "hero": "Wuyang" },
+      "ultimateCost": 2800
+    },
+    {
+      "hero": { "hero": "Vendetta" },
+      "ultimateCost": 2400
+    }
+  ]
+}
