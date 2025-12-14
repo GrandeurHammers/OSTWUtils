@@ -1,0 +1,18 @@
+globalvar Any z;
+
+class Tag {
+  public static String TX(in String code): <"<0><1>>", z, code>;
+  public static String FG(in String code): <"<0><1>>", z, code>;
+}
+
+rule: "Original rule by Zezombye and LazyLion"
+{
+    CreateDummyBot(AllHeroes().Random(), NumberOfSlots(Team.Team1) ? Team.Team1 : NumberOfSlots(Team.Team2) ? Team.Team2 : <Team>true, false, null, null);
+    StartForcingDummyBotName(LastCreatedEntity(), "______________________________________________________________________________________________________________________________〼");
+    z = StringSplit(FirstOf(LastCreatedEntity()), <String>[]);
+    StartForcingDummyBotName(LastCreatedEntity(), "______________________________________________________________________________________________________________________________ࡀ");
+    z = StringSlice(StringReplace("______________________________________________________________________________________________________________________________〼", z, FirstOf(LastCreatedEntity())), 126, true);
+    DestroyAllDummyBots();
+    # At this point the <fg> bypass is set up and you can use the holygrail variable to get the unsanitized '<' char.
+    // CreateHudText(AllPlayers(Team.All), <"<0>fgFF0000FF>R<0>fgFF7F00FF>a<0>fgFFFF00FF>i<0>fg00FF00FF>n<0>fg0000FFFF>b<0>fg4B0082FF>o<0>fg8B00FFFF>w<0>fgFFFFFFFF> text\n<1>", holygrail, <"<0>tx C00000000000003>", holygrail>>, null, null, Location.Left, false, Color.White, null, null, HudTextRev.VisibleToAndString, Spectators.DefaultVisibility);
+}
