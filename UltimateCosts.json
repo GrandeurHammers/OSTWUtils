@@ -179,6 +179,26 @@
     {
       "hero": { "hero": "Vendetta" },
       "ultimateCost": 2400
+    },
+    {
+      "hero": { "hero": "Domina" },
+      "ultimateCost": 2100
+    },
+    {
+      "hero": { "hero": "Emre" },
+      "ultimateCost": 2500
+    },
+    {
+      "hero": { "hero": "Anran" },
+      "ultimateCost": 2000
+    },
+    {
+      "hero": { "hero": "Mizuki" },
+      "ultimateCost": 2900
+    },
+    {
+      "hero": { "hero": "Jetpack Cat" },
+      "ultimateCost": 2400
     }
   ]
 }
